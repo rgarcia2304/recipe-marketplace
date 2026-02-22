@@ -1,0 +1,35 @@
+services: 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  postgresql:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: guest
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgs_db
+  
+  mongodb:
+    image: mongo:7
+    ports: 
+      - "27017:27017"
+
+  consul:
+    image: hashicorp/consul:1.17
+    ports:
+      - "8500:8500"
+    command: ["agent", "-dev", "-client=0.0.0.0"]
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports: 
+      - "16686:16686"
+      - "4317:4317"
