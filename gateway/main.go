@@ -9,6 +9,7 @@ import (
     pb "github.com/rgarcia2304/recipe-marketplace/proto/orders"
     "net/http"
     "google.golang.org/grpc/credentials/insecure"
+    "github.com/rgarcia2304/recipe-marketplace/gateway/handler"
 )
 
 const (
@@ -16,9 +17,6 @@ const (
 	port = ":8080"
 )
 
-type GatewayHandler struct{
-	ordersClient pb.OrdersServiceClient
-}
 
 func main(){
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -27,10 +25,9 @@ func main(){
 	}
 	defer conn.Close()
 	c := pb.NewOrdersServiceClient(conn)
-	client := GatewayHandler{ordersClient: c}
-
+	h := handler.NewGatewayHandler(c)
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /orders", client.CreateOrder)
+	mux.HandleFunc("POST /orders", h.CreateOrder)
 
 	s := &http.Server{
 		Addr: port, 
