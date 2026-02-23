@@ -19,9 +19,13 @@ type server struct{
 }
 
 func (s *server) CreateOrder(ctx context.Context, in *pb.CreateOrderRequest) (*pb.CreateOrderResponse, error){
-	log.Printf("Received: %v's order", in.GetCustomerId())
+	log.Printf("Received: %v's order", in.CustomerId)
 	// need to grab fields from the datbase
-	return &pb.CreateOrderResponse{}, nil
+	return &pb.CreateOrderResponse{
+        OrderId:    "test-order-123",
+        TotalPrice: 9.99,
+        PaymentLink: "https://stripe.com/test",
+    	}, nil
 }
 
 func main(){
