@@ -1,0 +1,43 @@
+syntax = "proto3";
+package stock;
+option go_package = "github.com/rgarcia2304/recipe-marketplace/proto/stock";
+
+service StockService{
+  rpc CheckAvailability(CheckAvailabilityRequest) returns (CheckAvailabilityResponse);
+  rpc ReserveStock(ReserveStockRequest) returns (ReserveStockResponse);
+  rpc ReleaseStock(ReleaseStockRequest) returns (ReleaseStockResponse);
+}
+
+message CheckAvailabilityRequest{
+  repeated StockItem items = 1;
+}
+
+message StockItem {
+  string listing_id = 1;
+  int32 quantity = 2;
+}
+
+message CheckAvailabilityResponse{
+  bool available = 1;
+  repeated string unavailable_ids = 2;
+}
+
+message ReserveStockRequest{
+  string order_id = 1;
+  repeated StockItem items = 2;
+}
+
+message ReserveStockResponse{
+  bool success = 1;
+  string message = 2;
+}
+
+message ReleaseStockRequest{
+  string order_id = 1;
+  repeated StockItem items = 2;
+}
+
+message ReleaseStockResponse{
+  bool success = 1;
+  string message = 2;
+}

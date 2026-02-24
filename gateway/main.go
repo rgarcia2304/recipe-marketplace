@@ -17,7 +17,6 @@ const (
 	port = ":8080"
 )
 
-
 func main(){
 	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil{
