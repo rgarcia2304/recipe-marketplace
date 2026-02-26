@@ -10,8 +10,12 @@ import(
 	pbStock "github.com/rgarcia2304/recipe-marketplace/proto/stock"
 	"github.com/rgarcia2304/recipe-marketplace/orders/service"
 	"github.com/rgarcia2304/recipe-marketplace/orders/handler"
+	"github.com/rgarcia2304/recipe-marketplace/orders/db"
 	"google.golang.org/grpc/credentials/insecure"
-
+	"github.com/joho/godotenv"
+	"os"
+	"context"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const(
@@ -19,6 +23,20 @@ const(
 )
 
 func main(){
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Println("Error loading .env file")
+	}
+	
+	pool, err := pgxpool.New(context.Background(), os.Getenv(os.Getenv("DATABASE_URL")))
+	if err != nil{
+		log.Fatalf("failed to connect to database: %v ", err)
+	}
+
+	defer pool.Close()
+	log.Println("Connected to database")
+	queries := db.New(pool)
+	_ = queries
 	lis, err := net.Listen("tcp", port)
 	if err != nil{
 		log.Fatalf("failed to listen: %v", err)
