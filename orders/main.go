@@ -11,6 +11,7 @@ import(
 	"github.com/rgarcia2304/recipe-marketplace/orders/service"
 	"github.com/rgarcia2304/recipe-marketplace/orders/handler"
 	"github.com/rgarcia2304/recipe-marketplace/orders/db"
+	"github.com/rgarcia2304/recipe-marketplace/orders/repository"
 	"google.golang.org/grpc/credentials/insecure"
 	"github.com/joho/godotenv"
 	"os"
@@ -28,7 +29,7 @@ func main(){
 		log.Println("Error loading .env file")
 	}
 	
-	pool, err := pgxpool.New(context.Background(), os.Getenv(os.Getenv("DATABASE_URL")))
+	pool, err := pgxpool.New(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil{
 		log.Fatalf("failed to connect to database: %v ", err)
 	}
@@ -42,8 +43,10 @@ func main(){
 		log.Fatalf("failed to listen: %v", err)
 	}
 	stockConn, _ := grpc.Dial("localhost:9003", grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	repo := repository.NewRepositoryService(queries, pool)
 	stockClient := pbStock.NewStockServiceClient(stockConn)
-	svc := service.NewOrdersService(stockClient)
+	svc := service.NewOrdersService(stockClient, repo)
 	h := handler.NewOrdersHandler(svc)
 
 	s := grpc.NewServer()

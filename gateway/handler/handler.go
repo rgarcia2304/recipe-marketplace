@@ -18,14 +18,14 @@ func NewGatewayHandler(ordersClient pb.OrdersServiceClient) *GatewayHandler{
 }
 
 func (h *GatewayHandler) CreateOrder (w http.ResponseWriter, r *http.Request){
-	 type orderItem struct{
-        ListingId string
-        Quantity int32
-        Price float32
-    }
+	type orderItem struct{
+		ListingId string `json:"listing_id"`
+		Quantity int32		`json:"quantity"`
+		Price float32		`json:"price"`
+    	}
     type CreateOrderParams struct{
-        CustomerId string
-        Items []orderItem
+	    CustomerId string	`json:"customer_id"`
+	    Items []orderItem	`json:"items"`
     }
     decoder := json.NewDecoder(r.Body)
     p := CreateOrderParams{}

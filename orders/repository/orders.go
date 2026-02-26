@@ -5,6 +5,9 @@ import(
 	"github.com/jackc/pgx/v5/pgxpool"
 	"context"
 	"github.com/jackc/pgx/v5/pgtype"
+	"fmt"
+	"github.com/google/uuid"
+	"log"
 
 )
 type OrdersRepository struct{
@@ -60,9 +63,15 @@ func( r *OrdersRepository) createOrder(ctx context.Context, qtx *db.Queries, inp
 	}
 
 	for _, item := range input.Items{
+		log.Printf("parsing UUID: %q", item.ListingID)
+		parsedUUID, err := uuid.Parse(item.ListingID)
+		if err != nil{
+			return nil, fmt.Errorf("invalid listing_id UUID: %w", err)
+		}
 		var listingUUID pgtype.UUID
-		listingUUID.Scan(item.ListingID)
-		_, err := qtx.CreateItem(ctx, db.CreateItemParams{
+		copy(listingUUID.Bytes[:], parsedUUID[:])
+		listingUUID.Valid = true
+		_, err = qtx.CreateItem(ctx, db.CreateItemParams{
 			OrderID: order.ID,
 			ListingID: listingUUID,
 			PriceCents: item.PriceCents,
