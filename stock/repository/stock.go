@@ -31,6 +31,7 @@ func NewRepositoryService(c *mongo.Collection) *StockRepository{
 
 type StockRepositoryInterface interface{
 	CheckAvailability(ctx context.Context, listingID string, quantity int32) (*Listing, error)
+	ReserveStock(ctx context.Context, listingID string, quantity int32) (error)
 }
 
 func(s *StockRepository) CheckItemAvailability(ctx context.Context, listingID string, quantity int32) (bool, error){
@@ -42,4 +43,15 @@ func(s *StockRepository) CheckItemAvailability(ctx context.Context, listingID st
 	}
 	
 	return listing.Quantity >= quantity,  nil
+}
+
+func(s *StockRepository) ReserveStock(ctx context.Context,listingID string, quantity int32) (error){
+	filter := bson.D{{Key: "_id", Value: listingID}}
+	update := bson.D{{"$inc", bson.D{{"quantity", -quantity}}}}
+	_, err := s.collection.UpdateOne(ctx, filter, update)
+	if err != nil{
+		return fmt.Errorf("could not update stock on recipe: %w", err)
+	}
+	
+	return nil
 }

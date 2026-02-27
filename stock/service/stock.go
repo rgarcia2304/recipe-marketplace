@@ -30,9 +30,15 @@ func (s *StockService) CheckAvailability(ctx context.Context, items []*pbStock.S
 		if !available{
 			isAvailable = false
 			unavailableIDs = append(unavailableIDs, item.ListingId)
-		}	
+		}else{
+			err = s.repo.ReserveStock(ctx, item.ListingId, item.Quantity)
+			if err != nil{
+				return nil, fmt.Errorf("failed to release stock: %w", err)
+			}
+		}
 	}
-
+	
+	
 	return &pbStock.CheckAvailabilityResponse{
 		Available: isAvailable,
 		UnavailableIds: unavailableIDs,
