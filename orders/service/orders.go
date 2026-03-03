@@ -8,6 +8,8 @@ import(
 	//"log"
 	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
 	"github.com/rgarcia2304/recipe-marketplace/commons/events"
+	"github.com/stripe/stripe-go/v76"
+	"github.com/stripe/stripe-go/v76/checkout/session"
 )
 
 type OrdersService struct{
@@ -66,7 +68,35 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, item
 	if err != nil{
 		return nil, fmt.Errorf("failed to create order: %w", err)
 	}
+
+
+	//need to process our order to be in the form of stripe line items params 
+	lnItems := make([]*stripe.CheckoutSessionLineItemParams, len(items))
+	for i, item := range repoItems{
+		lnItems[i] = &stripe.CheckoutSessionLineItemParams{
+   	 		PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+        		Currency:   stripe.String("usd"),
+        		UnitAmount: stripe.Int64(int64(item.PriceCents)),
+        		ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+            		Name: stripe.String(item.ListingID),
+        		},
+    		},
+    		Quantity: stripe.Int64(int64(item.Quantity)),
+		}	
+	}
+
+	params := &stripe.CheckoutSessionParams{
+		SuccessURL: stripe.String("http://localhost:8080/orders/success"),
+		CancelURL: stripe.String("http://localhost:8080/orders/cancel"),
+		LineItems: lnItems,
+		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
+
+	}
 	
+	s, err := session.New(params)
+	if err != nil{
+		return nil, fmt.Errorf("Could not create stripe checkout session %w", err)
+	}
 	eventItems := make([]events.OrderEventItem, len(items))
 	for i, item := range items{
 		eventItems[i] = events.OrderEventItem{
@@ -89,5 +119,6 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, item
 	return &pb.CreateOrderResponse{
    		OrderId:     order.ID.String(),
     		TotalPrice:  float32(order.TotalPriceCents) / 100,
+		PaymentLink: s.URL,
 	}, nil	
 }

@@ -18,6 +18,7 @@ import(
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
+	"github.com/stripe/stripe-go/v76"
 )
 
 const(
@@ -42,6 +43,9 @@ func main(){
 	if err != nil{
 		log.Fatalf("failed to listen: %v", err)
 	}
+
+	//load in stripe key
+	stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
 
 	//create a new broker to connect to 
 	b, err := broker.NewBroker(os.Getenv("RABBITMQ_URL"))
