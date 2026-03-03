@@ -17,6 +17,7 @@ import(
 	"os"
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
 )
 
 const(
@@ -37,16 +38,24 @@ func main(){
 	defer pool.Close()
 	log.Println("Connected to database")
 	queries := db.New(pool)
-	_ = queries
 	lis, err := net.Listen("tcp", port)
 	if err != nil{
 		log.Fatalf("failed to listen: %v", err)
 	}
+
+	//create a new broker to connect to 
+	b, err := broker.NewBroker(os.Getenv("RABBITMQ_URL"))
+	if err != nil{
+		log.Fatalf("failed to establish connection with rabbitMQ")
+	}
+	defer b.Close()
+
+
 	stockConn, _ := grpc.Dial("localhost:9003", grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	repo := repository.NewRepositoryService(queries, pool)
 	stockClient := pbStock.NewStockServiceClient(stockConn)
-	svc := service.NewOrdersService(stockClient, repo)
+	svc := service.NewOrdersService(stockClient, repo, b)
 	h := handler.NewOrdersHandler(svc)
 
 	s := grpc.NewServer()

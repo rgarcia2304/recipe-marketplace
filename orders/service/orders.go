@@ -6,15 +6,21 @@ import(
 	pb "github.com/rgarcia2304/recipe-marketplace/proto/orders"
 	"github.com/rgarcia2304/recipe-marketplace/orders/repository"
 	//"log"
+	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
+	"github.com/rgarcia2304/recipe-marketplace/commons/events"
 )
 
 type OrdersService struct{
 	stockClient pbStock.StockServiceClient
 	repo *repository.OrdersRepository
+	broker *broker.Broker
 }
 
-func NewOrdersService(stockClient pbStock.StockServiceClient, repo *repository.OrdersRepository) *OrdersService{
-	return &OrdersService{stockClient: stockClient, repo: repo}
+func NewOrdersService(stockClient pbStock.StockServiceClient,
+	repo *repository.OrdersRepository,
+	broker *broker.Broker,
+	) *OrdersService{
+		return &OrdersService{stockClient: stockClient, repo: repo, broker: broker}
 }
 
 func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, items []*pb.OrderItem) (*pb.CreateOrderResponse, error){
@@ -60,7 +66,25 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, item
 	if err != nil{
 		return nil, fmt.Errorf("failed to create order: %w", err)
 	}
+	
+	eventItems := make([]events.OrderEventItem, len(items))
+	for i, item := range items{
+		eventItems[i] = events.OrderEventItem{
+			ListingID: item.ListingId,
+			Quantity: item.Quantity,
+			PriceCents: int32(item.Price * 100),
+		}
+	}
 
+	err = o.broker.Publish("order.created", events.OrderCreatedEvent{
+		OrderID: order.ID.String(),
+		CustomerID: customerID,
+		TotalCents: input.TotalPriceCents,
+		Items: eventItems,
+	})
+	if err != nil{
+		return nil, fmt.Errorf("failed to publish order.created event: %w", err)
+	}
 	//log.Println(order)
 	return &pb.CreateOrderResponse{
    		OrderId:     order.ID.String(),
