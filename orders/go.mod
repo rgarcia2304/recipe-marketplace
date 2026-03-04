@@ -1,24 +1,25 @@
 module github.com/rgarcia2304/recipe-marketplace/orders
 
-go 1.25.0
+go 1.25.7
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/jackc/pgx/v5 v5.8.0
+	github.com/joho/godotenv v1.5.1
 	github.com/pressly/goose/v3 v3.27.0
+	github.com/rgarcia2304/recipe-marketplace/commons v0.0.0-20260303164652-19ef64628f8b
 	github.com/rgarcia2304/recipe-marketplace/proto v0.0.0-20260224183410-96180b5fffbd
+	github.com/stripe/stripe-go/v79 v79.12.0
 	google.golang.org/grpc v1.79.1
 )
 
 require (
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
-	github.com/lib/pq v1.11.2 // indirect
 	github.com/mfridman/interpolate v0.0.2 // indirect
+	github.com/rabbitmq/amqp091-go v1.10.0 // indirect
 	github.com/sethvargo/go-retry v0.3.0 // indirect
-	github.com/stripe/stripe-go/v76 v76.25.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/net v0.50.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect

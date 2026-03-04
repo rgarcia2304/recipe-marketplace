@@ -85,3 +85,22 @@ func( r *OrdersRepository) createOrder(ctx context.Context, qtx *db.Queries, inp
 
 	return &order, nil
 }
+
+func( r *OrdersRepository) GetOrder(ctx context.Context, id string) (*db.Order, error){
+	parsedUUID, err := uuid.Parse(id)
+	if err != nil{
+		return nil, fmt.Errorf("invalid order id: %w", err)
+	}
+	var orderUUID pgtype.UUID
+	copy(orderUUID.Bytes[:], parsedUUID[:])
+	orderUUID.Valid = true
+	order, err := r.queries.GetOrder(ctx, orderUUID)
+	if err != nil{
+		return nil, fmt.Errorf("Order was not found with given id: %v", err)
+	}
+	
+	return &order, nil
+
+}
+
+

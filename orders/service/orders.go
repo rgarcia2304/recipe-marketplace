@@ -8,8 +8,8 @@ import(
 	//"log"
 	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
 	"github.com/rgarcia2304/recipe-marketplace/commons/events"
-	"github.com/stripe/stripe-go/v76"
-	"github.com/stripe/stripe-go/v76/checkout/session"
+	"github.com/stripe/stripe-go/v79"
+	"github.com/stripe/stripe-go/v79/checkout/session"
 )
 
 type OrdersService struct{
@@ -25,6 +25,26 @@ func NewOrdersService(stockClient pbStock.StockServiceClient,
 		return &OrdersService{stockClient: stockClient, repo: repo, broker: broker}
 }
 
+func (o *OrdersService) GetOrder(ctx context.Context, orderID string)(*pb.Order, error){
+	order, err := o.repo.GetOrder(ctx, orderID)
+
+	if err != nil{
+		return nil, fmt.Errorf("Could not find this item: %v", err)
+	}
+	var status string
+	if order.Status.Valid {
+    		status = string(order.Status.OrderStatus)
+	}
+
+	return &pb.Order{
+    		OrderId:    order.ID.String(),
+    		CustomerId: order.CustomerID,
+    		TotalPrice: float32(order.TotalPriceCents) / 100,
+    		Status:     status,
+    		CreatedAt:  order.CreatedAt.Time.String(),
+		}, nil
+
+}
 func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, items []*pb.OrderItem) (*pb.CreateOrderResponse, error){
 	
 	stockItems := make([]*pbStock.StockItem, len(items))
@@ -90,6 +110,9 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, item
 		CancelURL: stripe.String("http://localhost:8080/orders/cancel"),
 		LineItems: lnItems,
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
+		Metadata: map[string]string{
+			"order_id": order.ID.String(),
+		},
 
 	}
 	

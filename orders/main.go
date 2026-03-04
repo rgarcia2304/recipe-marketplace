@@ -18,7 +18,7 @@ import(
 	"context"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
-	"github.com/stripe/stripe-go/v76"
+	"github.com/stripe/stripe-go/v79"
 )
 
 const(

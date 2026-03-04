@@ -7,14 +7,22 @@ import(
 	"encoding/json"
 	"context"
 	"time"
+	"github.com/stripe/stripe-go/v79"
+	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
+	"io"
+	"os"
+	"fmt"
+	"github.com/stripe/stripe-go/v79/webhook"
+	"github.com/rgarcia2304/recipe-marketplace/commons/events"
 )
 
 type GatewayHandler struct{
 	ordersClient pb.OrdersServiceClient
+	broker *broker.Broker
 }
 
-func NewGatewayHandler(ordersClient pb.OrdersServiceClient) *GatewayHandler{
-	return &GatewayHandler{ordersClient: ordersClient}
+func NewGatewayHandler(ordersClient pb.OrdersServiceClient, b *broker.Broker) *GatewayHandler{
+	return &GatewayHandler{ordersClient: ordersClient, broker: b}
 }
 
 func (h *GatewayHandler) CreateOrder (w http.ResponseWriter, r *http.Request){
@@ -65,3 +73,69 @@ func (h *GatewayHandler) CreateOrder (w http.ResponseWriter, r *http.Request){
     w.Write(data)
     w.Write([]byte("\n"))
 }
+
+func(h *GatewayHandler) StripeWebhook(w http.ResponseWriter, req *http.Request){
+	const MaxBodyBytes = int64(65536)
+	req.Body = http.MaxBytesReader(w, req.Body, MaxBodyBytes)
+	payload, err := io.ReadAll(req.Body)
+	if err != nil{
+		fmt.Fprintf(os.Stderr, "Error reading request body: %v\n", err)
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
+
+	
+	//then pass this off into somewhere
+	webhookSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
+	event, err := webhook.ConstructEventWithOptions(payload, req.Header.Get("Stripe-Signature"), webhookSecret,webhook.ConstructEventOptions{IgnoreAPIVersionMismatch: true,},)
+	if err != nil {
+        	fmt.Fprintf(os.Stderr, "Error verifying webhook signature: %v\n", err)
+        	w.WriteHeader(http.StatusBadRequest) // Return a 400 error on a bad signature
+        	return
+    	}
+
+	
+	switch event.Type{
+		case "checkout.session.completed":
+			var session stripe.CheckoutSession
+			err := json.Unmarshal(event.Data.Raw, &session)
+			if err != nil{
+				fmt.Fprintf(os.Stderr, "Error parshing webhook JSON: %v\n", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+
+			orderID := session.Metadata["order_id"]
+			//call the orders service to get the orders details 
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second*6)
+			defer cancel()
+
+			order, err := h.ordersClient.GetOrder(ctx, &pb.GetOrderRequest{OrderId: orderID})
+			if err != nil{
+				fmt.Fprintf(os.Stderr, "Error getting order: %v\n", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			err = h.broker.Publish("order.paid", events.OrderPaidEvent{
+				OrderID: order.OrderId,
+				CustomerID: order.CustomerId,
+				TotalCents: int32(order.TotalPrice),
+				PaymentIntentID: session.PaymentIntent.ID,
+			})
+			if err != nil{
+				fmt.Fprintf(os.Stderr,"Error publishing message to RabbitMQ %v", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			//publish this message to rabbit
+			fmt.Println("payment session was sucessfully completed")
+			
+		default:
+			fmt.Fprintf(os.Stderr, "Unhandled event type: %s \n", event.Type)
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+	

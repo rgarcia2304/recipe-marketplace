@@ -19,3 +19,8 @@ func (s *OrdersHandler) CreateOrder(ctx context.Context, in *pb.CreateOrderReque
 	 return s.service.CreateOrder(ctx, in.CustomerId, in.Items)
 
 }
+
+func (s *OrdersHandler) GetOrder(ctx context.Context, in *pb.GetOrderRequest)(*pb.Order, error){
+	 return s.service.GetOrder(ctx, in.OrderId)
+
+}
