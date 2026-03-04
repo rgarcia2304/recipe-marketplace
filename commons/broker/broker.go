@@ -36,6 +36,9 @@ func (b *Broker) Close(){
 	b.conn.Close()
 }
 
+func (b *Broker) Consume(queue string) (<-chan amqp.Delivery, error){
+	return b.channel.Consume(queue, "", false, false, false,false, nil)
+}	
 
 func setupQueues(ch *amqp.Channel) error{
 	// connect to the channel 

@@ -35,6 +35,7 @@ func NewRepositoryService(q *db.Queries, p *pgxpool.Pool) *OrdersRepository{
 
 type CreateOrderInput struct{
 	CustomerID string
+	Email string
 	TotalPriceCents int32
 	Items []OrderItemInput
 }
@@ -69,6 +70,7 @@ func( r *OrdersRepository) createOrder(ctx context.Context, qtx *db.Queries, inp
 	order, err := qtx.CreateOrder(ctx, db.CreateOrderParams{
 		CustomerID: input.CustomerID,
 		TotalPriceCents: input.TotalPriceCents,
+		Email: input.Email,
 	})
 
 	if err != nil{
@@ -115,7 +117,16 @@ func( r *OrdersRepository) GetOrder(ctx context.Context, id string) (*OrderWithI
 	if err != nil{
 		return nil, fmt.Errorf("Order with these items was not found: %v", err)
 	}
-	return &OrderWithItems{Order: order, Items: items}, nil
+
+	orderItems := make([]OrderItemInput, len(items))
+    	for i, item := range items {
+        	orderItems[i] = OrderItemInput{
+            	ListingID:  item.ListingID.String(),
+            	Quantity:   item.Quantity,
+            	PriceCents: item.PriceCents,
+        	}
+    	}
+	return &OrderWithItems{Order: &order, Items: orderItems}, nil
 
 }
 

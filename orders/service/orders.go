@@ -47,6 +47,7 @@ func (o *OrdersService) GetOrder(ctx context.Context, orderID string)(*pb.Order,
 	return &pb.Order{
     		OrderId:    order.Order.ID.String(),
     		CustomerId: order.Order.CustomerID,
+		Email: order.Order.Email,
     		TotalPrice: float32(order.Order.TotalPriceCents) / 100,
     		Status:     status,
     		CreatedAt:  order.Order.CreatedAt.Time.String(),
@@ -107,6 +108,7 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, emai
 
 	input := repository.CreateOrderInput{
 		CustomerID: customerID,
+		Email: email,
 		TotalPriceCents: totalCents,
 		Items: repoItems,
 	}

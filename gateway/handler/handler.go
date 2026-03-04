@@ -35,6 +35,7 @@ func (h *GatewayHandler) CreateOrder (w http.ResponseWriter, r *http.Request){
     	}
     type CreateOrderParams struct{
 	    CustomerId string	`json:"customer_id"`
+	    Email string `json:"email"`
 	    Items []orderItem	`json:"items"`
     }
     decoder := json.NewDecoder(r.Body)
@@ -57,6 +58,7 @@ func (h *GatewayHandler) CreateOrder (w http.ResponseWriter, r *http.Request){
     defer cancel()
     resp, err := h.ordersClient.CreateOrder(ctx, &pb.CreateOrderRequest{
         CustomerId: p.CustomerId,
+	Email: p.Email,
         Items: pbItems,
     })
     if err != nil{
@@ -114,6 +116,7 @@ func(h *GatewayHandler) StripeWebhook(w http.ResponseWriter, req *http.Request){
 			defer cancel()
 
 			order, err := h.ordersClient.GetOrder(ctx, &pb.GetOrderRequest{OrderId: orderID})
+			log.Printf("order email from GetOrder: %q", order.Email)
 			if err != nil{
 				fmt.Fprintf(os.Stderr, "Error getting order: %v\n", err)
 				w.WriteHeader(http.StatusBadRequest)
@@ -124,12 +127,23 @@ func(h *GatewayHandler) StripeWebhook(w http.ResponseWriter, req *http.Request){
 				w.WriteHeader(http.StatusOK)
 				return
 			}
+		
+			eventItems := make([]events.OrderEventItem, len(order.Items))
+			for i, item := range order.Items {
+    				eventItems[i] = events.OrderEventItem{
+        			ListingID:  item.ListingId,
+        			Quantity:   item.Quantity,
+        			PriceCents: int32(item.Price * 100),
+    			}
+			}
 
 			err = h.broker.Publish("order.paid", events.OrderPaidEvent{
 				OrderID: order.OrderId,
 				CustomerID: order.CustomerId,
 				TotalCents: int32(order.TotalPrice),
 				PaymentIntentID: session.PaymentIntent.ID,
+				Email: order.Email,
+				Items: eventItems,
 			})
 			if err != nil{
 				fmt.Fprintf(os.Stderr,"Error publishing message to RabbitMQ %v", err)

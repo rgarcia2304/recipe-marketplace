@@ -1,6 +1,6 @@
 -- name: CreateOrder :one
-INSERT INTO orders(customer_id, total_price_cents, status)
-VALUES ($1, $2, 'pending')
+INSERT INTO orders(customer_id, email, total_price_cents, status)
+VALUES ($1, $2, $3,  'pending')
 RETURNING *;
 
 -- name: CreateItem :one

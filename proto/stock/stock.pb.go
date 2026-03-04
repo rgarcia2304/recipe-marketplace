@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        v6.33.4
-// source: proto/stock/stock.proto
+// source: stock/stock.proto
 
 package stock
 
@@ -30,7 +30,7 @@ type CheckAvailabilityRequest struct {
 
 func (x *CheckAvailabilityRequest) Reset() {
 	*x = CheckAvailabilityRequest{}
-	mi := &file_proto_stock_stock_proto_msgTypes[0]
+	mi := &file_stock_stock_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -42,7 +42,7 @@ func (x *CheckAvailabilityRequest) String() string {
 func (*CheckAvailabilityRequest) ProtoMessage() {}
 
 func (x *CheckAvailabilityRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[0]
+	mi := &file_stock_stock_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -55,7 +55,7 @@ func (x *CheckAvailabilityRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAvailabilityRequest.ProtoReflect.Descriptor instead.
 func (*CheckAvailabilityRequest) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{0}
+	return file_stock_stock_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *CheckAvailabilityRequest) GetItems() []*StockItem {
@@ -75,7 +75,7 @@ type StockItem struct {
 
 func (x *StockItem) Reset() {
 	*x = StockItem{}
-	mi := &file_proto_stock_stock_proto_msgTypes[1]
+	mi := &file_stock_stock_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -87,7 +87,7 @@ func (x *StockItem) String() string {
 func (*StockItem) ProtoMessage() {}
 
 func (x *StockItem) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[1]
+	mi := &file_stock_stock_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -100,7 +100,7 @@ func (x *StockItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use StockItem.ProtoReflect.Descriptor instead.
 func (*StockItem) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{1}
+	return file_stock_stock_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *StockItem) GetListingId() string {
@@ -127,7 +127,7 @@ type CheckAvailabilityResponse struct {
 
 func (x *CheckAvailabilityResponse) Reset() {
 	*x = CheckAvailabilityResponse{}
-	mi := &file_proto_stock_stock_proto_msgTypes[2]
+	mi := &file_stock_stock_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -139,7 +139,7 @@ func (x *CheckAvailabilityResponse) String() string {
 func (*CheckAvailabilityResponse) ProtoMessage() {}
 
 func (x *CheckAvailabilityResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[2]
+	mi := &file_stock_stock_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -152,7 +152,7 @@ func (x *CheckAvailabilityResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CheckAvailabilityResponse.ProtoReflect.Descriptor instead.
 func (*CheckAvailabilityResponse) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{2}
+	return file_stock_stock_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CheckAvailabilityResponse) GetAvailable() bool {
@@ -179,7 +179,7 @@ type ReserveStockRequest struct {
 
 func (x *ReserveStockRequest) Reset() {
 	*x = ReserveStockRequest{}
-	mi := &file_proto_stock_stock_proto_msgTypes[3]
+	mi := &file_stock_stock_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -191,7 +191,7 @@ func (x *ReserveStockRequest) String() string {
 func (*ReserveStockRequest) ProtoMessage() {}
 
 func (x *ReserveStockRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[3]
+	mi := &file_stock_stock_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -204,7 +204,7 @@ func (x *ReserveStockRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReserveStockRequest.ProtoReflect.Descriptor instead.
 func (*ReserveStockRequest) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{3}
+	return file_stock_stock_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *ReserveStockRequest) GetOrderId() string {
@@ -231,7 +231,7 @@ type ReserveStockResponse struct {
 
 func (x *ReserveStockResponse) Reset() {
 	*x = ReserveStockResponse{}
-	mi := &file_proto_stock_stock_proto_msgTypes[4]
+	mi := &file_stock_stock_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -243,7 +243,7 @@ func (x *ReserveStockResponse) String() string {
 func (*ReserveStockResponse) ProtoMessage() {}
 
 func (x *ReserveStockResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[4]
+	mi := &file_stock_stock_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -256,7 +256,7 @@ func (x *ReserveStockResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReserveStockResponse.ProtoReflect.Descriptor instead.
 func (*ReserveStockResponse) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{4}
+	return file_stock_stock_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *ReserveStockResponse) GetSuccess() bool {
@@ -283,7 +283,7 @@ type ReleaseStockRequest struct {
 
 func (x *ReleaseStockRequest) Reset() {
 	*x = ReleaseStockRequest{}
-	mi := &file_proto_stock_stock_proto_msgTypes[5]
+	mi := &file_stock_stock_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -295,7 +295,7 @@ func (x *ReleaseStockRequest) String() string {
 func (*ReleaseStockRequest) ProtoMessage() {}
 
 func (x *ReleaseStockRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[5]
+	mi := &file_stock_stock_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -308,7 +308,7 @@ func (x *ReleaseStockRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReleaseStockRequest.ProtoReflect.Descriptor instead.
 func (*ReleaseStockRequest) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{5}
+	return file_stock_stock_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ReleaseStockRequest) GetOrderId() string {
@@ -335,7 +335,7 @@ type ReleaseStockResponse struct {
 
 func (x *ReleaseStockResponse) Reset() {
 	*x = ReleaseStockResponse{}
-	mi := &file_proto_stock_stock_proto_msgTypes[6]
+	mi := &file_stock_stock_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -347,7 +347,7 @@ func (x *ReleaseStockResponse) String() string {
 func (*ReleaseStockResponse) ProtoMessage() {}
 
 func (x *ReleaseStockResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_stock_proto_msgTypes[6]
+	mi := &file_stock_stock_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -360,7 +360,7 @@ func (x *ReleaseStockResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReleaseStockResponse.ProtoReflect.Descriptor instead.
 func (*ReleaseStockResponse) Descriptor() ([]byte, []int) {
-	return file_proto_stock_stock_proto_rawDescGZIP(), []int{6}
+	return file_stock_stock_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ReleaseStockResponse) GetSuccess() bool {
@@ -377,11 +377,11 @@ func (x *ReleaseStockResponse) GetMessage() string {
 	return ""
 }
 
-var File_proto_stock_stock_proto protoreflect.FileDescriptor
+var File_stock_stock_proto protoreflect.FileDescriptor
 
-const file_proto_stock_stock_proto_rawDesc = "" +
+const file_stock_stock_proto_rawDesc = "" +
 	"\n" +
-	"\x17proto/stock/stock.proto\x12\x05stock\"B\n" +
+	"\x11stock/stock.proto\x12\x05stock\"B\n" +
 	"\x18CheckAvailabilityRequest\x12&\n" +
 	"\x05items\x18\x01 \x03(\v2\x10.stock.StockItemR\x05items\"F\n" +
 	"\tStockItem\x12\x1d\n" +
@@ -409,19 +409,19 @@ const file_proto_stock_stock_proto_rawDesc = "" +
 	"\fReleaseStock\x12\x1a.stock.ReleaseStockRequest\x1a\x1b.stock.ReleaseStockResponseB7Z5github.com/rgarcia2304/recipe-marketplace/proto/stockb\x06proto3"
 
 var (
-	file_proto_stock_stock_proto_rawDescOnce sync.Once
-	file_proto_stock_stock_proto_rawDescData []byte
+	file_stock_stock_proto_rawDescOnce sync.Once
+	file_stock_stock_proto_rawDescData []byte
 )
 
-func file_proto_stock_stock_proto_rawDescGZIP() []byte {
-	file_proto_stock_stock_proto_rawDescOnce.Do(func() {
-		file_proto_stock_stock_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_stock_stock_proto_rawDesc), len(file_proto_stock_stock_proto_rawDesc)))
+func file_stock_stock_proto_rawDescGZIP() []byte {
+	file_stock_stock_proto_rawDescOnce.Do(func() {
+		file_stock_stock_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_stock_stock_proto_rawDesc), len(file_stock_stock_proto_rawDesc)))
 	})
-	return file_proto_stock_stock_proto_rawDescData
+	return file_stock_stock_proto_rawDescData
 }
 
-var file_proto_stock_stock_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_proto_stock_stock_proto_goTypes = []any{
+var file_stock_stock_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_stock_stock_proto_goTypes = []any{
 	(*CheckAvailabilityRequest)(nil),  // 0: stock.CheckAvailabilityRequest
 	(*StockItem)(nil),                 // 1: stock.StockItem
 	(*CheckAvailabilityResponse)(nil), // 2: stock.CheckAvailabilityResponse
@@ -430,7 +430,7 @@ var file_proto_stock_stock_proto_goTypes = []any{
 	(*ReleaseStockRequest)(nil),       // 5: stock.ReleaseStockRequest
 	(*ReleaseStockResponse)(nil),      // 6: stock.ReleaseStockResponse
 }
-var file_proto_stock_stock_proto_depIdxs = []int32{
+var file_stock_stock_proto_depIdxs = []int32{
 	1, // 0: stock.CheckAvailabilityRequest.items:type_name -> stock.StockItem
 	1, // 1: stock.ReserveStockRequest.items:type_name -> stock.StockItem
 	1, // 2: stock.ReleaseStockRequest.items:type_name -> stock.StockItem
@@ -447,26 +447,26 @@ var file_proto_stock_stock_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_proto_stock_stock_proto_init() }
-func file_proto_stock_stock_proto_init() {
-	if File_proto_stock_stock_proto != nil {
+func init() { file_stock_stock_proto_init() }
+func file_stock_stock_proto_init() {
+	if File_stock_stock_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_stock_stock_proto_rawDesc), len(file_proto_stock_stock_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_stock_stock_proto_rawDesc), len(file_stock_stock_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_proto_stock_stock_proto_goTypes,
-		DependencyIndexes: file_proto_stock_stock_proto_depIdxs,
-		MessageInfos:      file_proto_stock_stock_proto_msgTypes,
+		GoTypes:           file_stock_stock_proto_goTypes,
+		DependencyIndexes: file_stock_stock_proto_depIdxs,
+		MessageInfos:      file_stock_stock_proto_msgTypes,
 	}.Build()
-	File_proto_stock_stock_proto = out.File
-	file_proto_stock_stock_proto_goTypes = nil
-	file_proto_stock_stock_proto_depIdxs = nil
+	File_stock_stock_proto = out.File
+	file_stock_stock_proto_goTypes = nil
+	file_stock_stock_proto_depIdxs = nil
 }

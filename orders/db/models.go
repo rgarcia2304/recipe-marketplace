@@ -69,4 +69,5 @@ type Order struct {
 	CreatedAt       pgtype.Timestamp
 	TotalPriceCents int32
 	Status          NullOrderStatus
+	Email           string
 }

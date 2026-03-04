@@ -5,6 +5,7 @@ type OrderCreatedEvent struct{
 	CustomerID string `json:"customer_id"`
 	Items []OrderEventItem `json:"items"`
 	TotalCents int32	`json:"total_cents"`
+	Email string `json:"email"`
 }
 
 type OrderPaidEvent struct{
@@ -13,6 +14,7 @@ type OrderPaidEvent struct{
 	Items []OrderEventItem `json:"items"`
 	TotalCents int32	`json:"total_cents"`
 	PaymentIntentID string `json"payment_intent_id"`
+	Email string `json:"email"`
 }
 
 type OrderFulfilledEvent struct{

@@ -43,18 +43,19 @@ func (q *Queries) CreateItem(ctx context.Context, arg CreateItemParams) (Item, e
 }
 
 const createOrder = `-- name: CreateOrder :one
-INSERT INTO orders(customer_id, total_price_cents, status)
-VALUES ($1, $2, 'pending')
-RETURNING id, customer_id, created_at, total_price_cents, status
+INSERT INTO orders(customer_id, email, total_price_cents, status)
+VALUES ($1, $2, $3,  'pending')
+RETURNING id, customer_id, created_at, total_price_cents, status, email
 `
 
 type CreateOrderParams struct {
 	CustomerID      string
+	Email           string
 	TotalPriceCents int32
 }
 
 func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order, error) {
-	row := q.db.QueryRow(ctx, createOrder, arg.CustomerID, arg.TotalPriceCents)
+	row := q.db.QueryRow(ctx, createOrder, arg.CustomerID, arg.Email, arg.TotalPriceCents)
 	var i Order
 	err := row.Scan(
 		&i.ID,
@@ -62,12 +63,13 @@ func (q *Queries) CreateOrder(ctx context.Context, arg CreateOrderParams) (Order
 		&i.CreatedAt,
 		&i.TotalPriceCents,
 		&i.Status,
+		&i.Email,
 	)
 	return i, err
 }
 
 const getOrder = `-- name: GetOrder :one
-SELECT id, customer_id, created_at, total_price_cents, status FROM orders
+SELECT id, customer_id, created_at, total_price_cents, status, email FROM orders
 WHERE id = $1
 `
 
@@ -80,6 +82,7 @@ func (q *Queries) GetOrder(ctx context.Context, id pgtype.UUID) (Order, error) {
 		&i.CreatedAt,
 		&i.TotalPriceCents,
 		&i.Status,
+		&i.Email,
 	)
 	return i, err
 }
@@ -118,7 +121,7 @@ const updateOrderStatus = `-- name: UpdateOrderStatus :one
 UPDATE orders
 SET status = $2
 WHERE id = $1
-RETURNING id, customer_id, created_at, total_price_cents, status
+RETURNING id, customer_id, created_at, total_price_cents, status, email
 `
 
 type UpdateOrderStatusParams struct {
@@ -135,6 +138,7 @@ func (q *Queries) UpdateOrderStatus(ctx context.Context, arg UpdateOrderStatusPa
 		&i.CreatedAt,
 		&i.TotalPriceCents,
 		&i.Status,
+		&i.Email,
 	)
 	return i, err
 }
