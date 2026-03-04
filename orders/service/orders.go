@@ -45,6 +45,24 @@ func (o *OrdersService) GetOrder(ctx context.Context, orderID string)(*pb.Order,
 		}, nil
 
 }
+
+func (o *OrdersService) UpdateOrderStatus(ctx context.Context, orderID string, status repository.OrderStatus)(*pb.Order, error){
+	order, err := o.repo.UpdateOrderStatus(ctx, orderID, status)
+
+	if err != nil{
+		return nil, fmt.Errorf("Could not find this item: %v", err)
+	}
+
+	return &pb.Order{
+    		OrderId:    order.ID.String(),
+    		CustomerId: order.CustomerID,
+    		TotalPrice: float32(order.TotalPriceCents) / 100,
+    		Status:     string(status),
+    		CreatedAt:  order.CreatedAt.Time.String(),
+		}, nil
+
+}
+
 func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, items []*pb.OrderItem) (*pb.CreateOrderResponse, error){
 	
 	stockItems := make([]*pbStock.StockItem, len(items))

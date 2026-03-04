@@ -15,9 +15,18 @@ type OrdersRepository struct{
 	pool *pgxpool.Pool
 }
 
+type OrderStatus = db.OrderStatus
+const (
+    StatusPending   = db.OrderStatusPending
+    StatusPaid      = db.OrderStatusPaid
+    StatusFulfilled = db.OrderStatusFulfilled
+    StatusCancelled = db.OrderStatusCancelled
+)
+
 type OrderRepositoryInterface interface{
 	CreateOrder(ctx context.Context, input CreateOrderInput) (*db.Order, error)
 	GetOrder(ctx context.Context, id string) (*db.Order, error)
+	UpdateOrderStatus(ctx context.Context, id string, status string) 
 }
 
 func NewRepositoryService(q *db.Queries, p *pgxpool.Pool) *OrdersRepository{
@@ -95,6 +104,33 @@ func( r *OrdersRepository) GetOrder(ctx context.Context, id string) (*db.Order, 
 	copy(orderUUID.Bytes[:], parsedUUID[:])
 	orderUUID.Valid = true
 	order, err := r.queries.GetOrder(ctx, orderUUID)
+	if err != nil{
+		return nil, fmt.Errorf("Order was not found with given id: %v", err)
+	}
+	
+	return &order, nil
+
+}
+
+
+func( r *OrdersRepository) UpdateOrderStatus(ctx context.Context, id string, status db.OrderStatus) (*db.Order, error){
+	parsedUUID, err := uuid.Parse(id)
+	if err != nil{
+		return nil, fmt.Errorf("invalid order id: %w", err)
+	}
+	var orderUUID pgtype.UUID
+	copy(orderUUID.Bytes[:], parsedUUID[:])
+	orderUUID.Valid = true
+
+
+	order, err := r.queries.UpdateOrderStatus(ctx, db.UpdateOrderStatusParams{
+		ID: orderUUID,
+		Status: db.NullOrderStatus{
+			OrderStatus: status,
+			Valid: true,
+		},
+	})
+
 	if err != nil{
 		return nil, fmt.Errorf("Order was not found with given id: %v", err)
 	}

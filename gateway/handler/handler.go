@@ -14,6 +14,8 @@ import(
 	"fmt"
 	"github.com/stripe/stripe-go/v79/webhook"
 	"github.com/rgarcia2304/recipe-marketplace/commons/events"
+	"github.com/rgarcia2304/recipe-marketplace/orders/repository"
+
 )
 
 type GatewayHandler struct{
@@ -117,6 +119,12 @@ func(h *GatewayHandler) StripeWebhook(w http.ResponseWriter, req *http.Request){
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
+
+			if order.Status != "pending"{
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+
 			err = h.broker.Publish("order.paid", events.OrderPaidEvent{
 				OrderID: order.OrderId,
 				CustomerID: order.CustomerId,
@@ -125,6 +133,13 @@ func(h *GatewayHandler) StripeWebhook(w http.ResponseWriter, req *http.Request){
 			})
 			if err != nil{
 				fmt.Fprintf(os.Stderr,"Error publishing message to RabbitMQ %v", err)
+				w.WriteHeader(http.StatusBadRequest)
+				return
+			}
+			_, err = h.ordersClient.UpdateOrderStatus(ctx, &pb.UpdateOrderStatusRequest{OrderId: orderID, Status: string(repository.StatusPaid)}) 
+
+			if err != nil{
+				fmt.Fprintf(os.Stderr,"Error updating status %v", err)
 				w.WriteHeader(http.StatusBadRequest)
 				return
 			}
