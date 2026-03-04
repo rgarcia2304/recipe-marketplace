@@ -84,6 +84,36 @@ func (q *Queries) GetOrder(ctx context.Context, id pgtype.UUID) (Order, error) {
 	return i, err
 }
 
+const getOrderItems = `-- name: GetOrderItems :many
+SELECT id, order_id, listing_id, price_cents, quantity FROM items WHERE order_id = $1
+`
+
+func (q *Queries) GetOrderItems(ctx context.Context, orderID pgtype.UUID) ([]Item, error) {
+	rows, err := q.db.Query(ctx, getOrderItems, orderID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Item
+	for rows.Next() {
+		var i Item
+		if err := rows.Scan(
+			&i.ID,
+			&i.OrderID,
+			&i.ListingID,
+			&i.PriceCents,
+			&i.Quantity,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateOrderStatus = `-- name: UpdateOrderStatus :one
 UPDATE orders
 SET status = $2

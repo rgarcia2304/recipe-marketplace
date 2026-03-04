@@ -32,16 +32,25 @@ func (o *OrdersService) GetOrder(ctx context.Context, orderID string)(*pb.Order,
 		return nil, fmt.Errorf("Could not find this item: %v", err)
 	}
 	var status string
-	if order.Status.Valid {
-    		status = string(order.Status.OrderStatus)
+	if order.Order.Status.Valid {
+    		status = string(order.Order.Status.OrderStatus)
 	}
-
+	
+	pbItems := make([]*pb.OrderItem, len(order.Items))
+	for i, item := range order.Items{
+		pbItems[i] = &pb.OrderItem{
+			ListingId: item.ListingID,
+			Quantity: item.Quantity,
+			Price: float32(item.PriceCents)/100,
+		}
+	}
 	return &pb.Order{
-    		OrderId:    order.ID.String(),
-    		CustomerId: order.CustomerID,
-    		TotalPrice: float32(order.TotalPriceCents) / 100,
+    		OrderId:    order.Order.ID.String(),
+    		CustomerId: order.Order.CustomerID,
+    		TotalPrice: float32(order.Order.TotalPriceCents) / 100,
     		Status:     status,
-    		CreatedAt:  order.CreatedAt.Time.String(),
+    		CreatedAt:  order.Order.CreatedAt.Time.String(),
+		Items: pbItems,
 		}, nil
 
 }
@@ -63,7 +72,7 @@ func (o *OrdersService) UpdateOrderStatus(ctx context.Context, orderID string, s
 
 }
 
-func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, items []*pb.OrderItem) (*pb.CreateOrderResponse, error){
+func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, email string, items []*pb.OrderItem) (*pb.CreateOrderResponse, error){
 	
 	stockItems := make([]*pbStock.StockItem, len(items))
 	for i, item := range items{
@@ -150,6 +159,7 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, item
 	err = o.broker.Publish("order.created", events.OrderCreatedEvent{
 		OrderID: order.ID.String(),
 		CustomerID: customerID,
+		Email: email,
 		TotalCents: input.TotalPriceCents,
 		Items: eventItems,
 	})

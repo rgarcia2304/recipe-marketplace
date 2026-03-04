@@ -45,6 +45,11 @@ type OrderItemInput struct{
 	PriceCents int32
 }
 
+type OrderWithItems struct{
+	Order *db.Order
+	Items []OrderItemInput
+}
+
 func(r *OrdersRepository) CreateOrder(ctx context.Context, input CreateOrderInput) (*db.Order, error){
 	tx, err := r.pool.Begin(ctx)
 	defer tx.Rollback(ctx)
@@ -61,7 +66,6 @@ func(r *OrdersRepository) CreateOrder(ctx context.Context, input CreateOrderInpu
 }
 
 func( r *OrdersRepository) createOrder(ctx context.Context, qtx *db.Queries, input CreateOrderInput)(*db.Order, error){
-
 	order, err := qtx.CreateOrder(ctx, db.CreateOrderParams{
 		CustomerID: input.CustomerID,
 		TotalPriceCents: input.TotalPriceCents,
@@ -95,7 +99,7 @@ func( r *OrdersRepository) createOrder(ctx context.Context, qtx *db.Queries, inp
 	return &order, nil
 }
 
-func( r *OrdersRepository) GetOrder(ctx context.Context, id string) (*db.Order, error){
+func( r *OrdersRepository) GetOrder(ctx context.Context, id string) (*OrderWithItems, error){
 	parsedUUID, err := uuid.Parse(id)
 	if err != nil{
 		return nil, fmt.Errorf("invalid order id: %w", err)
@@ -107,8 +111,11 @@ func( r *OrdersRepository) GetOrder(ctx context.Context, id string) (*db.Order, 
 	if err != nil{
 		return nil, fmt.Errorf("Order was not found with given id: %v", err)
 	}
-	
-	return &order, nil
+	items, err := r.queries.GetOrderItems(ctx, orderUUID)
+	if err != nil{
+		return nil, fmt.Errorf("Order with these items was not found: %v", err)
+	}
+	return &OrderWithItems{Order: order, Items: items}, nil
 
 }
 

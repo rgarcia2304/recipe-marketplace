@@ -12,6 +12,9 @@ RETURNING *;
 SELECT * FROM orders
 WHERE id = $1;
 
+-- name: GetOrderItems :many
+SELECT * FROM items WHERE order_id = $1;
+
 -- name: UpdateOrderStatus :one
 UPDATE orders
 SET status = $2

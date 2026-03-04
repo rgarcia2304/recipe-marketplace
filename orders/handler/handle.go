@@ -17,7 +17,7 @@ func NewOrdersHandler(svc *service.OrdersService) *OrdersHandler{
 }
 
 func (s *OrdersHandler) CreateOrder(ctx context.Context, in *pb.CreateOrderRequest)(*pb.CreateOrderResponse, error){
-	 return s.service.CreateOrder(ctx, in.CustomerId, in.Items)
+	 return s.service.CreateOrder(ctx, in.CustomerId, in.Email, in.Items)
 
 }
 
