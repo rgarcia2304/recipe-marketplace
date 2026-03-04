@@ -1,52 +1,58 @@
 package discovery
 
-
-import(
-	"fmt"
-	"log"
-	"github.com/hashicorp/consul/api"
+import (
+    "fmt"
+    consul "github.com/hashicorp/consul/api"
 )
 
+func RegisterService(serviceID, serviceName, address string, port int) error {
+    config := consul.DefaultConfig()
+    client, err := consul.NewClient(config)
+    if err != nil {
+        return fmt.Errorf("failed to create consul client: %w", err)
+    }
 
-func (c *Client) Register(cfg Config) error{
-	
-	registration := &api.AgentServiceRegistration{
-		Name: cfg.ServiceName,
-		Port: cfg.Port,
-		Address: cfg.ServiceAddress,
-		ID: cfg.ServiceID,
-	}
+    registration := &consul.AgentServiceRegistration{
+        ID:      serviceID,
+        Name:    serviceName,
+        Address: address,
+        Port:    port,
+        Check: &consul.AgentServiceCheck{
+            TCP:     fmt.Sprintf("%s:%d", address, port),
+            Interval: "15s",
+            Timeout:  "10s",
+	    DeregisterCriticalServiceAfter: "30s",
+        },
+    }
 
-	err := c.consul.Agent().ServiceRegister(registration)
-	if err != nil{
-		return fmt.Errorf("failed to register service: %w", err)
-	}
-
-	log.Printf("Registered service %s with ID %s", cfg.ServiceName, cfg.ServiceID)
-	return nil
+    return client.Agent().ServiceRegister(registration)
 }
 
-func (c *Client) Deregister() error{
-	err := c.consul.Agent().ServiceDeregister(c.serviceID)
-	if err != nil{
-		return fmt.Errorf("failed to deregister service: %w", err)
-	}
-
-	log.Printf("Deregistered service with ID %s", c.serviceID)
-	return nil
+func DeregisterService(serviceID string) error {
+    config := consul.DefaultConfig()
+    client, err := consul.NewClient(config)
+    if err != nil {
+        return fmt.Errorf("failed to create consul client: %w", err)
+    }
+    return client.Agent().ServiceDeregister(serviceID)
 }
 
+func GetServiceAddress(serviceName string) (string, error) {
+    config := consul.DefaultConfig()
+    client, err := consul.NewClient(config)
+    if err != nil {
+        return "", fmt.Errorf("failed to create consul client: %w", err)
+    }
 
-func (c *Client) GetServiceAddress(serviceName string) (string, error){
-	services, _, err := c.consul.Health().Service(serviceName, "", true, nil)
-	if err != nil{
-		return "", fmt.Errorf("failed to discover service %s: %w", serviceName, err)
-	}
+    services, _, err := client.Health().Service(serviceName, "", true, nil)
+    if err != nil {
+        return "", fmt.Errorf("failed to find service %s: %w", serviceName, err)
+    }
 
-	if len(services) == 0{
-		return "", fmt.Errorf("No healthy instances found for service %s", serviceName)
-	}
+    if len(services) == 0 {
+        return "", fmt.Errorf("no healthy instances of %s found", serviceName)
+    }
 
-	entry := service[0]
-	return fmt.Sprintf("%s:%d", entry.Service.Address, entry.Service.Port), nil
+    service := services[0].Service
+    return fmt.Sprintf("%s:%d", service.Address, service.Port), nil
 }

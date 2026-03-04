@@ -2,8 +2,6 @@ package discovery
 
 import(
 	"fmt"
-	"log"
-	"time"
 	"github.com/hashicorp/consul/api"
 )
 

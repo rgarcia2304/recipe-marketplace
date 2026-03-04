@@ -19,6 +19,7 @@ import(
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
 	"github.com/stripe/stripe-go/v79"
+	"github.com/rgarcia2304/recipe-marketplace/commons/discovery"
 )
 
 const(
@@ -39,6 +40,13 @@ func main(){
 	defer pool.Close()
 	log.Println("Connected to database")
 	queries := db.New(pool)
+	
+	err = discovery.RegisterService("orders", "orders", os.Getenv("LOCAL_IP"), 9001)
+	if err != nil{
+		log.Fatalf("failed to register with consul: %v", err)
+	}
+	defer discovery.DeregisterService("orders")
+
 	lis, err := net.Listen("tcp", port)
 	if err != nil{
 		log.Fatalf("failed to listen: %v", err)
@@ -54,8 +62,12 @@ func main(){
 	}
 	defer b.Close()
 
+	stockAddr, err := discovery.GetServiceAddress("stock")
+	if err != nil{
+		log.Fatalf("issue getting service address stock %v", err)
+	}
 
-	stockConn, _ := grpc.Dial("localhost:9003", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	stockConn, _ := grpc.Dial(stockAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
 	repo := repository.NewRepositoryService(queries, pool)
 	stockClient := pbStock.NewStockServiceClient(stockConn)

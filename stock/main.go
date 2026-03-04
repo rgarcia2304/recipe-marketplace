@@ -16,6 +16,7 @@ import(
 
 	"github.com/joho/godotenv"
 	pb "github.com/rgarcia2304/recipe-marketplace/proto/stock"
+	"github.com/rgarcia2304/recipe-marketplace/commons/discovery"
 )
 
 const(
@@ -23,19 +24,13 @@ const(
 )
 
 func main(){
-	lis, err := net.Listen("tcp", port)
-	if err != nil{
-		log.Fatalf("failed to listen: %v", err)
-	}	
 	
-	//here implement all the mongo db connection logic 
-	//Here we need to connect to mongoDB database with a client and pass that to the repository eventually.
-
-	err = godotenv.Load("../.env") 
+	err := godotenv.Load("../.env") 
 	if err != nil{
 		log.Println("Error loading .env file")
 	}
-
+	
+	
 	var uri string
 	if uri = os.Getenv("MONGODB_URI");uri == ""{
 		log.Fatal("You must set your 'MONGODB_URI' environment variable")
@@ -53,6 +48,23 @@ func main(){
 		}
 	}()
 
+
+	lis, err := net.Listen("tcp", port)
+    	if err != nil {
+        	log.Fatalf("failed to listen: %v", err)
+    	}
+
+	err = discovery.RegisterService("stock", "stock", os.Getenv("LOCAL_IP"), 9003)
+	if err != nil{
+		log.Fatalf("failed to register with consul %v", err)
+	}
+	defer discovery.DeregisterService("stock")
+	
+	//here implement all the mongo db connection logic 
+	//Here we need to connect to mongoDB database with a client and pass that to the repository eventually.
+
+	
+
 	coll := client.Database("recipe-marketplace").Collection("listings")
 	repo := repository.NewRepositoryService(coll)
 	svc := service.NewStockService(repo)
@@ -64,4 +76,4 @@ func main(){
 		log.Fatalf("failed to serve : %v ", err)
 	}
 
-	}
+}

@@ -14,13 +14,11 @@ import (
     "os"
     "github.com/joho/godotenv"
     "github.com/rgarcia2304/recipe-marketplace/commons/broker"
+    "github.com/rgarcia2304/recipe-marketplace/commons/discovery"
 
 )
 
-const (
-	address = "localhost:9001"
-	port = ":8080"
-)
+const port = ":8080"
 
 func main(){
 	err := godotenv.Load("../.env")
@@ -34,8 +32,12 @@ func main(){
 		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
 	}
 	defer b.Close()
-
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	
+	ordersAddr, err := discovery.GetServiceAddress("orders")
+	if err != nil{
+		log.Fatalf("failed to get orders address: %v", err)
+	}
+	conn, err := grpc.Dial(ordersAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil{
 		log.Fatalf("did not connect: %v", err)
 	}
