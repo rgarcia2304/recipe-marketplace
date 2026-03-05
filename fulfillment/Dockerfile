@@ -19,5 +19,5 @@ RUN go build -o fulfillment .
 
 FROM alpine:latest
 WORKDIR /app
-COPY --from=builder /app/fulfillent/fulfillment .
+COPY --from=builder /app/fulfillment/fulfillment .
 CMD ["./fulfillment"]
