@@ -5,7 +5,6 @@ use (
 	./fulfillment
 	./gateway
 	./orders
-	./payments
 	./proto
 	./stock
 )
