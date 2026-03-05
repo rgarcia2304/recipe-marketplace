@@ -8,6 +8,8 @@ COPY proto/ proto/
 COPY orders/ orders/
 
 RUN go work sync
+RUN go work sync && cd orders && go mod download
+
 WORKDIR /app/orders
 RUN go build -o orders .
 
