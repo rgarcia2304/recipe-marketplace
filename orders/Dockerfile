@@ -7,6 +7,7 @@ COPY commons/ commons/
 COPY proto/ proto/
 COPY orders/ orders/
 
+RUN go work sync
 WORKDIR /app/orders
 RUN go build -o orders .
 
