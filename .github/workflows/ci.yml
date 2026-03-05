@@ -57,4 +57,28 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-orders:latest
 
+      - name: Build and push Stock image
+        uses: docker/build-push-action@v5
+        with:
+          context: 
+          file: ./stock/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:latest
+
+      - name: Build and push Gateway image
+        uses: docker/build-push-action@v5
+        with:
+          context: 
+          file: ./gateway/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-gateway:latest
+
+      - name: Build and push Fulfillment image
+        uses: docker/build-push-action@v5
+        with:
+          context: 
+          file: ./fulfillment/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-orders:latest
+
 
