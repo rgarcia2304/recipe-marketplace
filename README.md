@@ -6,7 +6,7 @@ I have always wondered end to end how it was that stores were built from browsin
 
 Design and engineering wise this is a event-driven recipe marketplace built with Go microservices. Users browse recipes, purchase them via Stripe, and receive the recipe files via email upon payment confirmation.
 
-**Live demo:** _deploy to add URL here_  
+**Live demo:** 
 **Docker Hub:** [rgarcia2304](https://hub.docker.com/u/rgarcia2304)
 
 ---
@@ -117,7 +117,7 @@ Fulfillment consumes order.paid
 ## Key Design Decisions
 
 **Synchronous Stripe integration**  
-Stripe Checkout Session creation happens in the `CreateOrder` request path. This adds ~300ms latency but returns the payment link immediately — no polling or websockets required. Tradeoff: Orders service is coupled to Stripe availability.
+Stripe Checkout Session creation happens in the `CreateOrder` request path. This adds ~300ms latency but returns the payment link immediately with no polling or websockets required. Tradeoff: Orders service is coupled to Stripe availability.
 
 **Idempotent webhook handling**  
 Before processing `checkout.session.completed`, the Gateway fetches the current order status. If status is not `pending` the event is acknowledged and discarded. Protects against Stripe's at-least-once delivery guarantee.
@@ -137,12 +137,11 @@ Order status is stored as a Postgres enum (`pending`, `paid`, `fulfilled`, `canc
 
 **Microservices vs Monolith**
 This project is microservices by design choice, not necessity. The goal was to 
-understand how distributed systems work at a production level — gRPC inter-service 
+understand how distributed systems work at a production level, gRPC inter-service 
 communication, event driven architecture, service discovery, distributed transactions.
 
-For the actual use case a monolith would have been the correct technical decision. 
-It would eliminate network latency between services, remove the need for Consul, 
-simplify deployment, and reduce complexity significantly.
+For the acutal use case a monolith would have been the correct technical decision. It would eliminate network latency between services, remove the need for Consul, make deployment simpler, and reduce complexity.
+
 ---
 
 ## Running Locally
