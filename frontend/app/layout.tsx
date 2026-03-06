@@ -5,13 +5,13 @@ import Navbar from '@/components/Navbar';
 import CartDrawer from '@/components/CartDrawer';
 
 export const metadata: Metadata = {
-  title: 'Renta-Recipe | Recetas Auténticas Mexicanas',
-  description: 'Descubre y compra recetas auténticas mexicanas | tacos, moles, aguas frescas y más.',
+  title: 'RentaRecipe — Authentic Mexican Recipes',
+  description: 'Buy authentic Mexican recipes — tacos, moles, aguas frescas and more. Delivered instantly to your inbox.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="en">
       <body>
         <CartProvider>
           <Navbar />

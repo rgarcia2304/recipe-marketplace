@@ -1,144 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600;700;800&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
 :root {
-  --cream: #F5EDD6;
-  --cream-dark: #EDE0C0;
-  --terracotta: #C0492C;
-  --terracotta-dark: #9B3A22;
-  --gold: #D4A017;
-  --gold-light: #E8B830;
-  --olive: #4A5C2F;
-  --olive-light: #6B8040;
-  --charcoal: #2C2416;
-  --charcoal-mid: #4A3F2F;
-  --text-body: #3D2E1A;
-  --tile-red: #B03A2E;
-  --tile-blue: #2E5FA3;
-  --tile-green: #2E7D32;
+  --black: #080810;
+  --black-soft: #0F0F1A;
+  --black-card: #13131F;
+  --black-border: #1E1E30;
+  --magenta: #E0185A;
+  --magenta-bright: #FF2070;
+  --magenta-dim: rgba(224, 24, 90, 0.15);
+  --purple: #7B2FBE;
+  --purple-bright: #9B4FDE;
+  --marigold: #F5A623;
+  --marigold-dim: rgba(245, 166, 35, 0.12);
+  --cyan: #00D4FF;
+  --cyan-dim: rgba(0, 212, 255, 0.1);
+  --white: #F8F4EE;
+  --white-dim: rgba(248, 244, 238, 0.6);
+  --white-faint: rgba(248, 244, 238, 0.15);
+  --text-muted: rgba(248, 244, 238, 0.4);
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--cream);
-  color: var(--text-body);
-  font-family: 'Crimson Pro', Georgia, serif;
-  font-size: 18px;
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
   line-height: 1.6;
   overflow-x: hidden;
 }
 
-/* Tile pattern background utility */
-.tile-bg {
-  background-image: 
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 39px,
-      rgba(176, 58, 46, 0.08) 39px,
-      rgba(176, 58, 46, 0.08) 40px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 39px,
-      rgba(176, 58, 46, 0.08) 39px,
-      rgba(176, 58, 46, 0.08) 40px
-    );
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--black-soft); }
+::-webkit-scrollbar-thumb { background: var(--magenta); border-radius: 3px; }
 
-/* Decorative border utility */
-.border-tile {
-  border: 3px solid var(--terracotta);
-  outline: 1px solid var(--gold);
-  outline-offset: -6px;
-}
-
-/* Typography */
-h1, h2, h3 {
-  font-family: 'Playfair Display', Georgia, serif;
-  color: var(--charcoal);
-}
-
-.display-font {
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 0.05em;
-}
-
-/* Button base */
-.btn-primary {
-  background: var(--terracotta);
-  color: var(--cream);
-  font-family: 'Crimson Pro', serif;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 12px 28px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-}
-
-.btn-primary:hover {
-  background: var(--terracotta-dark);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(192, 73, 44, 0.3);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--terracotta);
-  font-family: 'Crimson Pro', serif;
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 11px 27px;
-  border: 2px solid var(--terracotta);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: var(--terracotta);
-  color: var(--cream);
-}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--cream-dark); }
-::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 4px; }
-
-/* Animations */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slideInRight {
   from { transform: translateX(100%); }
   to { transform: translateX(0); }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.4s ease forwards;
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }

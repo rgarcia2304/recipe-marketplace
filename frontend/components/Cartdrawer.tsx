@@ -1,5 +1,4 @@
 'use client';
-
 import { useCart } from '@/lib/cart';
 import { useState } from 'react';
 
@@ -11,14 +10,14 @@ export default function CartDrawer() {
 
   async function handleCheckout() {
     if (!email || !email.includes('@')) {
-      setEmailError('Please enter a valid email address');
+      setEmailError('Enter a valid email to receive your recipes');
       return;
     }
     setEmailError('');
     setLoading(true);
-
     try {
-      const response = await fetch('http://localhost:8080/orders', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+      const response = await fetch(`${apiUrl}/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -31,18 +30,13 @@ export default function CartDrawer() {
           })),
         }),
       });
-
-      if (!response.ok) {
-        const err = await response.text();
-        throw new Error(err);
-      }
-
+      if (!response.ok) throw new Error(await response.text());
       const data = await response.json();
       clearCart();
       closeCart();
       window.location.href = data.payment_link;
     } catch (err) {
-      console.error('Checkout error:', err);
+      console.error(err);
       alert('Something went wrong. Please try again.');
     } finally {
       setLoading(false);
@@ -53,74 +47,53 @@ export default function CartDrawer() {
 
   return (
     <>
-      {/* Backdrop */}
-      <div
-        onClick={closeCart}
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(44, 36, 22, 0.6)',
-          zIndex: 200,
-          animation: 'fadeIn 0.3s ease',
-        }}
-      />
+      <div onClick={closeCart} style={{
+        position: 'fixed', inset: 0,
+        background: 'rgba(0,0,0,0.7)',
+        backdropFilter: 'blur(4px)',
+        zIndex: 200, animation: 'fadeIn 0.25s ease',
+      }} />
 
-      {/* Drawer */}
       <div style={{
-        position: 'fixed',
-        top: 0,
-        right: 0,
-        height: '100vh',
-        width: '420px',
-        background: 'var(--cream)',
+        position: 'fixed', top: 0, right: 0,
+        height: '100vh', width: '400px',
+        background: 'var(--black-soft)',
         zIndex: 201,
-        display: 'flex',
-        flexDirection: 'column',
-        borderLeft: '3px solid var(--terracotta)',
+        display: 'flex', flexDirection: 'column',
+        borderLeft: '1px solid var(--black-border)',
         animation: 'slideInRight 0.3s ease',
-        boxShadow: '-8px 0 40px rgba(44, 36, 22, 0.3)',
+        boxShadow: '-20px 0 60px rgba(0,0,0,0.5)',
       }}>
         {/* Header */}
         <div style={{
-          background: 'var(--charcoal)',
-          padding: '20px 24px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '3px solid var(--gold)',
+          padding: '24px',
+          borderBottom: '1px solid var(--black-border)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <div>
-            <div style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: '24px',
-              color: 'var(--gold)',
-              letterSpacing: '0.1em',
+            <h2 style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 700, fontSize: '16px',
+              letterSpacing: '0.1em', textTransform: 'uppercase',
+              color: 'var(--white)',
+            }}>Your Cart</h2>
+            <p style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: '12px', color: 'var(--text-muted)',
+              marginTop: '2px',
             }}>
-              Tu Carrito 🛒
-            </div>
-            <div style={{
-              fontFamily: "'Crimson Pro', serif",
-              fontSize: '13px',
-              color: 'rgba(212, 160, 23, 0.6)',
-            }}>
-              {items.length === 0 ? 'Vacío' : `${items.length} receta${items.length > 1 ? 's' : ''}`}
-            </div>
+              {items.length === 0 ? 'Empty' : `${items.length} recipe${items.length > 1 ? 's' : ''}`}
+            </p>
           </div>
-          <button
-            onClick={closeCart}
-            style={{
-              background: 'none',
-              border: '1px solid rgba(212, 160, 23, 0.3)',
-              color: 'var(--cream)',
-              cursor: 'pointer',
-              fontSize: '20px',
-              width: '36px',
-              height: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s',
-            }}
+          <button onClick={closeCart} style={{
+            background: 'none', border: '1px solid var(--black-border)',
+            color: 'var(--text-muted)', cursor: 'pointer',
+            width: '32px', height: '32px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '16px', transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--magenta)'; e.currentTarget.style.color = 'var(--magenta)'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--black-border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
             ✕
           </button>
@@ -130,75 +103,69 @@ export default function CartDrawer() {
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
           {items.length === 0 ? (
             <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              height: '200px',
-              gap: '12px',
-              opacity: 0.5,
+              display: 'flex', flexDirection: 'column',
+              alignItems: 'center', justifyContent: 'center',
+              height: '200px', gap: '12px',
             }}>
-              <span style={{ fontSize: '48px' }}>🌮</span>
-              <p style={{ fontFamily: "'Crimson Pro', serif", fontSize: '16px', color: 'var(--charcoal-mid)' }}>
-                Tu carrito está vacío
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--black-border)" strokeWidth="1.5">
+                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 01-8 0"/>
+              </svg>
+              <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '13px', color: 'var(--text-muted)' }}>
+                Your cart is empty
               </p>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {items.map(item => (
                 <div key={item.recipe.id} style={{
-                  background: 'white',
-                  border: '1px solid var(--cream-dark)',
-                  borderLeft: '4px solid var(--terracotta)',
+                  background: 'var(--black-card)',
+                  border: '1px solid var(--black-border)',
                   padding: '14px',
-                  display: 'flex',
-                  gap: '12px',
-                  alignItems: 'center',
+                  display: 'flex', gap: '12px', alignItems: 'center',
                 }}>
-                  <span style={{ fontSize: '32px', flexShrink: 0 }}>{item.recipe.emoji}</span>
+                  <div style={{
+                    width: '44px', height: '44px', flexShrink: 0,
+                    background: 'var(--magenta-dim)',
+                    border: '1px solid rgba(224,24,90,0.3)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <span style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 800, fontSize: '14px',
+                      color: 'var(--magenta)',
+                    }}>
+                      {item.recipe.name.charAt(0)}
+                    </span>
+                  </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      fontFamily: "'Playfair Display', serif",
-                      fontSize: '15px',
-                      fontWeight: 700,
-                      color: 'var(--charcoal)',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                    <p style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 600, fontSize: '13px',
+                      color: 'var(--white)',
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                     }}>
                       {item.recipe.name}
-                    </div>
-                    <div style={{
-                      fontFamily: "'Crimson Pro', serif",
-                      fontSize: '13px',
-                      color: 'var(--terracotta)',
-                      fontWeight: 600,
+                    </p>
+                    <p style={{
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontSize: '12px', color: 'var(--marigold)',
+                      fontWeight: 600, marginTop: '2px',
                     }}>
                       ${item.recipe.price.toFixed(2)}
-                    </div>
+                    </p>
                   </div>
-                  {/* Qty controls */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                    <button
-                      onClick={() => updateQuantity(item.recipe.id, item.quantity - 1)}
-                      style={qtyBtnStyle}
-                    >−</button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                    <button onClick={() => updateQuantity(item.recipe.id, item.quantity - 1)} style={qtyBtn}>−</button>
                     <span style={{
-                      fontFamily: "'Bebas Neue', sans-serif",
-                      fontSize: '18px',
-                      minWidth: '20px',
-                      textAlign: 'center',
+                      fontFamily: "'Montserrat', sans-serif",
+                      fontWeight: 700, fontSize: '14px',
+                      minWidth: '18px', textAlign: 'center', color: 'var(--white)',
                     }}>
                       {item.quantity}
                     </span>
-                    <button
-                      onClick={() => updateQuantity(item.recipe.id, item.quantity + 1)}
-                      style={qtyBtnStyle}
-                    >+</button>
-                    <button
-                      onClick={() => removeItem(item.recipe.id)}
-                      style={{ ...qtyBtnStyle, background: 'var(--terracotta)', color: 'white', marginLeft: '4px' }}
-                    >✕</button>
+                    <button onClick={() => updateQuantity(item.recipe.id, item.quantity + 1)} style={qtyBtn}>+</button>
+                    <button onClick={() => removeItem(item.recipe.id)} style={{ ...qtyBtn, borderColor: 'rgba(224,24,90,0.3)', color: 'var(--magenta)', marginLeft: '4px' }}>✕</button>
                   </div>
                 </div>
               ))}
@@ -206,70 +173,57 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer / Checkout */}
+        {/* Checkout footer */}
         {items.length > 0 && (
           <div style={{
-            padding: '20px 24px',
-            borderTop: '2px solid var(--cream-dark)',
-            background: 'white',
+            padding: '20px',
+            borderTop: '1px solid var(--black-border)',
+            background: 'var(--black-card)',
           }}>
-            {/* Email input */}
-            <div style={{ marginBottom: '12px' }}>
+            <div style={{ marginBottom: '14px' }}>
               <label style={{
                 display: 'block',
-                fontFamily: "'Crimson Pro', serif",
-                fontSize: '13px',
-                fontWeight: 600,
-                color: 'var(--charcoal-mid)',
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                marginBottom: '6px',
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '11px', fontWeight: 600,
+                color: 'var(--text-muted)',
+                letterSpacing: '0.1em', textTransform: 'uppercase',
+                marginBottom: '8px',
               }}>
-                Email para recibir tus recetas
+                Email — recipes delivered here
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="tu@email.com"
+                placeholder="you@example.com"
                 style={{
-                  width: '100%',
-                  padding: '10px 12px',
-                  border: `2px solid ${emailError ? 'var(--terracotta)' : 'var(--cream-dark)'}`,
-                  fontFamily: "'Crimson Pro', serif",
-                  fontSize: '15px',
-                  color: 'var(--charcoal)',
-                  background: 'var(--cream)',
-                  outline: 'none',
+                  width: '100%', padding: '10px 12px',
+                  background: 'var(--black-soft)',
+                  border: `1px solid ${emailError ? 'var(--magenta)' : 'var(--black-border)'}`,
+                  color: 'var(--white)',
+                  fontFamily: "'Montserrat', sans-serif", fontSize: '14px',
+                  outline: 'none', transition: 'border-color 0.2s',
                 }}
+                onFocus={e => e.currentTarget.style.borderColor = 'var(--purple)'}
+                onBlur={e => e.currentTarget.style.borderColor = emailError ? 'var(--magenta)' : 'var(--black-border)'}
               />
-              {emailError && (
-                <p style={{ color: 'var(--terracotta)', fontSize: '13px', marginTop: '4px' }}>{emailError}</p>
-              )}
+              {emailError && <p style={{ color: 'var(--magenta)', fontSize: '12px', marginTop: '6px' }}>{emailError}</p>}
             </div>
 
-            {/* Total */}
             <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '16px',
-              paddingTop: '12px',
-              borderTop: '1px solid var(--cream-dark)',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              marginBottom: '16px', paddingTop: '14px',
+              borderTop: '1px solid var(--black-border)',
             }}>
               <span style={{
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '18px',
-                letterSpacing: '0.1em',
-                color: 'var(--charcoal)',
-              }}>
-                Total
-              </span>
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '12px', fontWeight: 600,
+                color: 'var(--text-muted)', letterSpacing: '0.1em', textTransform: 'uppercase',
+              }}>Total</span>
               <span style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: '24px',
-                fontWeight: 700,
-                color: 'var(--terracotta)',
+                fontFamily: "'Cormorant Garamond', serif",
+                fontSize: '28px', fontWeight: 700,
+                color: 'var(--marigold)',
               }}>
                 ${total.toFixed(2)}
               </span>
@@ -279,21 +233,19 @@ export default function CartDrawer() {
               onClick={handleCheckout}
               disabled={loading}
               style={{
-                width: '100%',
-                padding: '14px',
-                background: loading ? 'var(--charcoal-mid)' : 'var(--terracotta)',
-                color: 'var(--cream)',
-                border: 'none',
+                width: '100%', padding: '14px',
+                background: loading ? 'var(--black-border)' : 'linear-gradient(135deg, var(--magenta), var(--purple))',
+                color: 'white', border: 'none',
                 cursor: loading ? 'not-allowed' : 'pointer',
-                fontFamily: "'Bebas Neue', sans-serif",
-                fontSize: '20px',
-                letterSpacing: '0.15em',
-                transition: 'background 0.2s',
+                fontFamily: "'Montserrat', sans-serif",
+                fontSize: '13px', fontWeight: 700,
+                letterSpacing: '0.12em', textTransform: 'uppercase',
+                transition: 'opacity 0.2s',
               }}
-              onMouseEnter={e => !loading && (e.currentTarget.style.background = 'var(--terracotta-dark)')}
-              onMouseLeave={e => !loading && (e.currentTarget.style.background = 'var(--terracotta)')}
+              onMouseEnter={e => !loading && (e.currentTarget.style.opacity = '0.85')}
+              onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
             >
-              {loading ? 'Procesando...' : '🌶️ Pagar con Stripe'}
+              {loading ? 'Processing...' : 'Checkout with Stripe'}
             </button>
           </div>
         )}
@@ -302,17 +254,11 @@ export default function CartDrawer() {
   );
 }
 
-const qtyBtnStyle: React.CSSProperties = {
-  width: '28px',
-  height: '28px',
-  background: 'var(--cream-dark)',
-  border: '1px solid var(--cream-dark)',
-  cursor: 'pointer',
-  fontSize: '16px',
-  fontWeight: 700,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: 'var(--charcoal)',
-  transition: 'background 0.15s',
+const qtyBtn: React.CSSProperties = {
+  width: '26px', height: '26px',
+  background: 'var(--black-soft)',
+  border: '1px solid var(--black-border)',
+  cursor: 'pointer', fontSize: '14px', fontWeight: 700,
+  display: 'flex', alignItems: 'center', justifyContent: 'center',
+  color: 'var(--white-dim)', transition: 'all 0.15s',
 };

@@ -1,5 +1,4 @@
 'use client';
-
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 export interface Recipe {
@@ -8,9 +7,10 @@ export interface Recipe {
   description: string;
   price: number;
   category: string;
-  emoji: string;
   difficulty: string;
   time: string;
+  serves: string;
+  tag?: string;
 }
 
 export interface CartItem {
@@ -25,7 +25,7 @@ interface CartContextType {
   closeCart: () => void;
   addItem: (recipe: Recipe) => void;
   removeItem: (id: string) => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
   total: number;
   itemCount: number;
@@ -43,43 +43,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const addItem = useCallback((recipe: Recipe) => {
     setItems(prev => {
       const existing = prev.find(i => i.recipe.id === recipe.id);
-      if (existing) {
-        return prev.map(i =>
-          i.recipe.id === recipe.id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
-        );
-      }
+      if (existing) return prev.map(i => i.recipe.id === recipe.id ? { ...i, quantity: i.quantity + 1 } : i);
       return [...prev, { recipe, quantity: 1 }];
     });
     setIsOpen(true);
   }, []);
 
-  const removeItem = useCallback((id: string) => {
-    setItems(prev => prev.filter(i => i.recipe.id !== id));
-  }, []);
+  const removeItem = useCallback((id: string) => setItems(prev => prev.filter(i => i.recipe.id !== id)), []);
 
-  const updateQuantity = useCallback((id: string, quantity: number) => {
-    if (quantity <= 0) {
-      setItems(prev => prev.filter(i => i.recipe.id !== id));
-    } else {
-      setItems(prev =>
-        prev.map(i => i.recipe.id === id ? { ...i, quantity } : i)
-      );
-    }
+  const updateQuantity = useCallback((id: string, qty: number) => {
+    if (qty <= 0) setItems(prev => prev.filter(i => i.recipe.id !== id));
+    else setItems(prev => prev.map(i => i.recipe.id === id ? { ...i, quantity: qty } : i));
   }, []);
 
   const clearCart = useCallback(() => setItems([]), []);
-
-  const total = items.reduce((sum, i) => sum + i.recipe.price * i.quantity, 0);
-  const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const total = items.reduce((s, i) => s + i.recipe.price * i.quantity, 0);
+  const itemCount = items.reduce((s, i) => s + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{
-      items, isOpen, openCart, closeCart,
-      addItem, removeItem, updateQuantity, clearCart,
-      total, itemCount
-    }}>
+    <CartContext.Provider value={{ items, isOpen, openCart, closeCart, addItem, removeItem, updateQuantity, clearCart, total, itemCount }}>
       {children}
     </CartContext.Provider>
   );

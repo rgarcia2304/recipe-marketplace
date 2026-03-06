@@ -1,94 +1,106 @@
 'use client';
-
 import Link from 'next/link';
 import { useCart } from '@/lib/cart';
+import { useState } from 'react';
 
 export default function Navbar() {
   const { itemCount, openCart } = useCart();
+  const [hoverRecipes, setHoverRecipes] = useState(false);
 
   return (
     <nav style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 100,
-      background: 'var(--charcoal)',
-      borderBottom: '3px solid var(--gold)',
-      padding: '0 48px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: '72px',
+      position: 'sticky', top: 0, zIndex: 100,
+      background: 'rgba(8, 8, 16, 0.95)',
+      backdropFilter: 'blur(12px)',
+      borderBottom: '1px solid var(--black-border)',
+      padding: '0 64px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      height: '68px',
     }}>
-      {/* Logo */}
-      <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <span style={{ fontSize: '28px' }}>🌮</span>
-        <div>
-          <div style={{
-            fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: '26px',
-            color: 'var(--gold)',
-            letterSpacing: '0.1em',
-            lineHeight: 1,
-          }}>
-            Renta-Recipe
-          </div>
-          <div style={{
-            fontFamily: "'Crimson Pro', serif",
-            fontSize: '11px',
-            color: 'rgba(212, 160, 23, 0.6)',
-            letterSpacing: '0.2em',
-            textTransform: 'uppercase',
-          }}>
-            Recetas Auténticas
-          </div>
+      <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{
+          width: '32px', height: '32px',
+          background: 'linear-gradient(135deg, var(--magenta), var(--purple))',
+          borderRadius: '50%',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <div style={{ width: '10px', height: '10px', background: 'var(--marigold)', borderRadius: '50%' }} />
         </div>
+        <span style={{
+          fontFamily: "'Montserrat', sans-serif",
+          fontWeight: 800,
+          fontSize: '18px',
+          color: 'var(--white)',
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase',
+        }}>
+          Renta<span style={{ color: 'var(--magenta)' }}>Recipe</span>
+        </span>
       </Link>
 
-      {/* Nav links */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
-        <Link href="/" style={navLinkStyle}>Inicio</Link>
-        <Link href="/listings" style={navLinkStyle}>Recetas</Link>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '36px' }}>
+        <Link href="/" style={{
+          fontFamily: "'Montserrat', sans-serif",
+          fontSize: '13px', fontWeight: 500,
+          color: 'var(--white-dim)', textDecoration: 'none',
+          letterSpacing: '0.08em', textTransform: 'uppercase',
+          transition: 'color 0.2s',
+        }}>
+          Home
+        </Link>
+        <Link
+          href="/listings"
+          style={{
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: '13px', fontWeight: 500,
+            color: hoverRecipes ? 'var(--white)' : 'var(--white-dim)',
+            textDecoration: 'none',
+            letterSpacing: '0.08em', textTransform: 'uppercase',
+            transition: 'color 0.2s',
+          }}
+          onMouseEnter={() => setHoverRecipes(true)}
+          onMouseLeave={() => setHoverRecipes(false)}
+        >
+          Recipes
+        </Link>
 
-        {/* Cart button */}
         <button
           onClick={openCart}
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'var(--terracotta)',
-            border: 'none',
-            borderRadius: '0',
-            padding: '10px 20px',
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: 'transparent',
+            border: '1px solid var(--black-border)',
+            padding: '8px 18px',
             cursor: 'pointer',
-            color: 'var(--cream)',
-            fontFamily: "'Crimson Pro', serif",
-            fontSize: '16px',
-            fontWeight: 600,
-            letterSpacing: '0.05em',
-            transition: 'background 0.2s',
+            color: 'var(--white)',
+            fontFamily: "'Montserrat', sans-serif",
+            fontSize: '13px', fontWeight: 600,
+            letterSpacing: '0.08em', textTransform: 'uppercase',
+            transition: 'all 0.2s',
             position: 'relative',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'var(--terracotta-dark)')}
-          onMouseLeave={e => (e.currentTarget.style.background = 'var(--terracotta)')}
+          onMouseEnter={e => {
+            e.currentTarget.style.borderColor = 'var(--magenta)';
+            e.currentTarget.style.color = 'var(--magenta)';
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.borderColor = 'var(--black-border)';
+            e.currentTarget.style.color = 'var(--white)';
+          }}
         >
-          <span style={{ fontSize: '18px' }}>🛒</span>
-          <span>Carrito</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 01-8 0"/>
+          </svg>
+          Cart
           {itemCount > 0 && (
             <span style={{
-              position: 'absolute',
-              top: '-8px',
-              right: '-8px',
-              background: 'var(--gold)',
-              color: 'var(--charcoal)',
-              borderRadius: '50%',
-              width: '22px',
-              height: '22px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 700,
+              position: 'absolute', top: '-8px', right: '-8px',
+              background: 'var(--magenta)',
+              color: 'white', borderRadius: '50%',
+              width: '20px', height: '20px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '11px', fontWeight: 700,
             }}>
               {itemCount}
             </span>
@@ -98,14 +110,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
-const navLinkStyle: React.CSSProperties = {
-  fontFamily: "'Crimson Pro', serif",
-  fontSize: '17px',
-  fontWeight: 400,
-  color: 'var(--cream)',
-  textDecoration: 'none',
-  letterSpacing: '0.05em',
-  transition: 'color 0.2s',
-  opacity: 0.85,
-};

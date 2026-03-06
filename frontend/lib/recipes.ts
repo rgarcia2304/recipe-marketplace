@@ -1,130 +1,128 @@
 import { Recipe } from './cart';
 
 export const recipes: Recipe[] = [
-  // Tacos & Antojitos
   {
     id: "550e8400-e29b-41d4-a716-446655440000",
     name: "Tacos al Pastor",
-    description: "Marinated pork with pineapple, achiote, and chiles. The classic taqueria staple with secrets passed down through generations.",
+    description: "Slow-roasted achiote pork with pineapple, white onion, and cilantro on handmade corn tortillas. The crown jewel of Mexico City street food.",
     price: 9.99,
     category: "Tacos & Antojitos",
-    emoji: "🌮",
     difficulty: "Intermediate",
-    time: "3 hrs"
+    time: "3 hrs",
+    serves: "6",
+    tag: "Bestseller"
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440001",
-    name: "Gorditas de Chicharrón",
-    description: "Thick masa pockets filled with crispy pork rinds in salsa verde. Street food at its most satisfying.",
+    name: "Gorditas de Chicharron",
+    description: "Thick masa pockets stuffed with crispy pork rinds in salsa verde. Pressed on a comal until golden and blistered.",
     price: 7.99,
     category: "Tacos & Antojitos",
-    emoji: "🫓",
     difficulty: "Easy",
-    time: "45 min"
+    time: "45 min",
+    serves: "4",
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002",
-    name: "Tlayudas Oaxaqueñas",
-    description: "Giant crispy tortilla with black beans, Oaxacan cheese, and tasajo. The pizza of Mexico.",
+    name: "Tlayudas Oaxaquenas",
+    description: "Giant crispy tortilla layered with black bean paste, Oaxacan string cheese, and grilled tasajo beef. The pride of Oaxaca.",
     price: 11.99,
     category: "Tacos & Antojitos",
-    emoji: "🫔",
     difficulty: "Intermediate",
-    time: "1.5 hrs"
+    time: "1.5 hrs",
+    serves: "2",
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
     name: "Sopes de Tinga",
-    description: "Thick masa bases topped with chipotle chicken, crema, and queso fresco. A beloved antojito for any occasion.",
+    description: "Thick masa rounds topped with chipotle-braised chicken, refried beans, crema, and queso fresco.",
     price: 8.99,
     category: "Tacos & Antojitos",
-    emoji: "🥘",
     difficulty: "Easy",
-    time: "1 hr"
+    time: "1 hr",
+    serves: "4",
   },
-
-  // Moles & Salsas
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
-    name: "Mole Negro Oaxaqueño",
-    description: "Deep black mole with 30+ ingredients — mulato chiles, chocolate, spices, charred onion. A sacred recipe.",
+    name: "Mole Negro Oaxaqueno",
+    description: "The sacred mole. Over 30 ingredients including mulato chiles, Mexican chocolate, charred onion, and spices ground on a metate. Served over turkey.",
     price: 19.99,
     category: "Moles & Salsas",
-    emoji: "🫕",
     difficulty: "Advanced",
-    time: "2 days"
+    time: "2 days",
+    serves: "12",
+    tag: "Masterclass"
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440005",
     name: "Salsa Macha",
-    description: "Dried chile oil with peanuts, sesame, and garlic. Adds depth to everything it touches.",
+    description: "Dried chile oil with roasted peanuts, sesame seeds, and garlic. One spoonful transforms any dish.",
     price: 6.99,
     category: "Moles & Salsas",
-    emoji: "🌶️",
     difficulty: "Easy",
-    time: "20 min"
+    time: "20 min",
+    serves: "8",
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440006",
     name: "Mole Amarillo",
-    description: "Golden Oaxacan mole with guajillo and costeño chiles, tomatillos, and masa. Lighter than negro but deeply complex.",
+    description: "Oaxacan golden mole with guajillo and costeño chiles, tomatillos, and fresh masa as a thickener. Lighter and brighter than negro.",
     price: 14.99,
     category: "Moles & Salsas",
-    emoji: "🍲",
     difficulty: "Advanced",
-    time: "4 hrs"
+    time: "4 hrs",
+    serves: "8",
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440007",
-    name: "Salsa de Chile de Árbol",
-    description: "Fire-roasted tomatillo salsa with chile de árbol. The one that keeps you coming back for more.",
+    name: "Salsa de Chile de Arbol",
+    description: "Fire-roasted tomatillo base with chile de arbol. The addictive heat that keeps you reaching back in.",
     price: 5.99,
     category: "Moles & Salsas",
-    emoji: "🥫",
     difficulty: "Easy",
-    time: "30 min"
+    time: "30 min",
+    serves: "6",
   },
-
-  // Aguas & Drinks
   {
     id: "550e8400-e29b-41d4-a716-446655440008",
     name: "Agua de Jamaica",
-    description: "Hibiscus flower agua fresca with a hint of cinnamon. Vibrant crimson, refreshingly tart, impossibly beautiful.",
+    description: "Hibiscus flower concentrate steeped with cinnamon and piloncillo. Deep crimson, floral, and brilliantly tart.",
     price: 4.99,
     category: "Aguas & Drinks",
-    emoji: "🌺",
     difficulty: "Easy",
-    time: "15 min"
+    time: "15 min",
+    serves: "6",
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440009",
-    name: "Tepache de Piña",
-    description: "Fermented pineapple drink with piloncillo and spices. Ancient, probiotic, and wildly refreshing.",
+    name: "Tepache de Pina",
+    description: "Fermented pineapple rind drink with piloncillo, cinnamon, and clove. Three days of patience, a lifetime of reward.",
     price: 6.99,
     category: "Aguas & Drinks",
-    emoji: "🍍",
     difficulty: "Easy",
-    time: "3 days"
+    time: "3 days",
+    serves: "8",
+    tag: "Fermented"
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440010",
     name: "Horchata de Arroz",
-    description: "Classic rice milk with cinnamon and vanilla. Creamy, cooling, and perfect alongside anything spicy.",
+    description: "Soaked rice blended with cinnamon and vanilla, strained until silky. The essential companion to anything spicy.",
     price: 4.99,
     category: "Aguas & Drinks",
-    emoji: "🥛",
     difficulty: "Easy",
-    time: "4 hrs"
+    time: "4 hrs",
+    serves: "6",
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440011",
     name: "Champurrado",
-    description: "Thick Mexican hot chocolate with masa, piloncillo, and canela. Winter in a cup.",
+    description: "Thick Mexican drinking chocolate made with masa harina, piloncillo, Mexican cinnamon, and real cacao. Winter in a clay mug.",
     price: 5.99,
     category: "Aguas & Drinks",
-    emoji: "☕",
     difficulty: "Easy",
-    time: "30 min"
+    time: "30 min",
+    serves: "4",
   },
 ];
 
