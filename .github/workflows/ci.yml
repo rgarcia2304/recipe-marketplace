@@ -66,8 +66,8 @@ jobs:
           file: ./stock/Dockerfile
           push: true
           tags: | 
-          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:latest
-          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:latest
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:${{ github.sha }}
 
 
       - name: Build and push Gateway image
@@ -88,8 +88,8 @@ jobs:
           file: ./fulfillment/Dockerfile
           push: true
           tags: | 
-          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-fulfillment:latest
-          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-fulfillment:${{ github.sha }}
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-fulfillment:latest
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-fulfillment:${{ github.sha }}
 
 
 
