@@ -55,7 +55,9 @@ jobs:
           context: 
           file: ./orders/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-orders:latest
+          tags: | 
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-orders:latest
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-orders:${{ github.sha }}
 
       - name: Build and push Stock image
         uses: docker/build-push-action@v5
@@ -63,7 +65,10 @@ jobs:
           context: 
           file: ./stock/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:latest
+          tags: | 
+          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:latest
+          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-stock:${{ github.sha }}
+
 
       - name: Build and push Gateway image
         uses: docker/build-push-action@v5
@@ -71,7 +76,10 @@ jobs:
           context: 
           file: ./gateway/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-gateway:latest
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-gateway:latest
+            ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-gateway:${{ github.sha }}
+
 
       - name: Build and push Fulfillment image
         uses: docker/build-push-action@v5
@@ -79,6 +87,9 @@ jobs:
           context: 
           file: ./fulfillment/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-orders:latest
+          tags: | 
+          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-fulfillment:latest
+          ${{ secrets.DOCKER_USERNAME }}/recipe-marketplace-fulfillment:${{ github.sha }}
+
 
 
