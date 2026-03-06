@@ -1,26 +1,144 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bebas+Neue&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #F5EDD6;
+  --cream-dark: #EDE0C0;
+  --terracotta: #C0492C;
+  --terracotta-dark: #9B3A22;
+  --gold: #D4A017;
+  --gold-light: #E8B830;
+  --olive: #4A5C2F;
+  --olive-light: #6B8040;
+  --charcoal: #2C2416;
+  --charcoal-mid: #4A3F2F;
+  --text-body: #3D2E1A;
+  --tile-red: #B03A2E;
+  --tile-blue: #2E5FA3;
+  --tile-green: #2E7D32;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--cream);
+  color: var(--text-body);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Tile pattern background utility */
+.tile-bg {
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 39px,
+      rgba(176, 58, 46, 0.08) 39px,
+      rgba(176, 58, 46, 0.08) 40px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 39px,
+      rgba(176, 58, 46, 0.08) 39px,
+      rgba(176, 58, 46, 0.08) 40px
+    );
+}
+
+/* Decorative border utility */
+.border-tile {
+  border: 3px solid var(--terracotta);
+  outline: 1px solid var(--gold);
+  outline-offset: -6px;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--charcoal);
+}
+
+.display-font {
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+/* Button base */
+.btn-primary {
+  background: var(--terracotta);
+  color: var(--cream);
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 12px 28px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.btn-primary:hover {
+  background: var(--terracotta-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(192, 73, 44, 0.3);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--terracotta);
+  font-family: 'Crimson Pro', serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 11px 27px;
+  border: 2px solid var(--terracotta);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--terracotta);
+  color: var(--cream);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--cream-dark); }
+::-webkit-scrollbar-thumb { background: var(--terracotta); border-radius: 4px; }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease forwards;
 }
