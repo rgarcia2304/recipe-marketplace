@@ -1,8 +1,12 @@
 # Renta-Recipe
 
-A production-grade event-driven recipe marketplace built with Go microservices. Users browse recipes, purchase them via Stripe, and receive the recipe files via email upon payment confirmation.
+## Motivation
+I have always wondered end to end how it was that stores were built from browsing to actually get your order. So I decided to take on this project of actually building a recipe market place. It fulfills the most essential components of the buying experience. 
 
-**Live demo:** _deploy to add URL here_  
+
+Design and engineering wise this is a event-driven recipe marketplace built with Go microservices. Users browse recipes, purchase them via Stripe, and receive the recipe files via email upon payment confirmation.
+
+**Live demo:** 
 **Docker Hub:** [rgarcia2304](https://hub.docker.com/u/rgarcia2304)
 
 ---
@@ -113,7 +117,7 @@ Fulfillment consumes order.paid
 ## Key Design Decisions
 
 **Synchronous Stripe integration**  
-Stripe Checkout Session creation happens in the `CreateOrder` request path. This adds ~300ms latency but returns the payment link immediately — no polling or websockets required. Tradeoff: Orders service is coupled to Stripe availability.
+Stripe Checkout Session creation happens in the `CreateOrder` request path. This adds ~300ms latency but returns the payment link immediately with no polling or websockets required. Tradeoff: Orders service is coupled to Stripe availability.
 
 **Idempotent webhook handling**  
 Before processing `checkout.session.completed`, the Gateway fetches the current order status. If status is not `pending` the event is acknowledged and discarded. Protects against Stripe's at-least-once delivery guarantee.
@@ -129,6 +133,14 @@ Services register on startup with TCP health checks. Gateway and Orders resolve 
 
 **PostgreSQL enums vs TEXT**  
 Order status is stored as a Postgres enum (`pending`, `paid`, `fulfilled`, `cancelled`). In retrospect TEXT + CHECK constraint would have been simpler — pgx null enum wrapper types (`NullOrderStatus`) added friction throughout the Go codebase with no meaningful benefit at this scale.
+
+
+**Microservices vs Monolith**
+This project is microservices by design choice, not necessity. The goal was to 
+understand how distributed systems work at a production level, gRPC inter-service 
+communication, event driven architecture, service discovery, distributed transactions.
+
+For the acutal use case a monolith would have been the correct technical decision. It would eliminate network latency between services, remove the need for Consul, make deployment simpler, and reduce complexity.
 
 ---
 
