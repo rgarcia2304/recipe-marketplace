@@ -6,21 +6,36 @@ import(
 	pb "github.com/rgarcia2304/recipe-marketplace/proto/orders"
 	"github.com/rgarcia2304/recipe-marketplace/orders/repository"
 	//"log"
-	"github.com/rgarcia2304/recipe-marketplace/commons/broker"
 	"github.com/rgarcia2304/recipe-marketplace/commons/events"
 	"github.com/stripe/stripe-go/v79"
 	"github.com/stripe/stripe-go/v79/checkout/session"
+	"github.com/rgarcia2304/recipe-marketplace/orders/db"
 )
 
+type OrderRepo interface{
+	CreateOrder(ctx context.Context, input repository.CreateOrderInput) (*db.Order, error)
+	GetOrder(ctx context.Context, orderID string) (*repository.OrderWithItems, error)
+	UpdateOrderStatus(ctx context.Context, orderID string, status repository.OrderStatus) (*db.Order, error)
+}
 type OrdersService struct{
-	stockClient pbStock.StockServiceClient
-	repo *repository.OrdersRepository
-	broker *broker.Broker
+	stockClient StockChecker
+	repo OrderRepo
+	broker MessageBroker
 }
 
-func NewOrdersService(stockClient pbStock.StockServiceClient,
-	repo *repository.OrdersRepository,
-	broker *broker.Broker,
+type MessageBroker interface{
+	Publish(routingKey string, event any) error
+}
+
+
+type StockChecker interface{
+	CheckAvailability(ctx context.Context, req *pbStock.CheckAvailabilityRequest) (*pbStock.CheckAvailabilityResponse, error)
+}
+
+func NewOrdersService(
+	repo OrderRepo,
+	broker MessageBroker,
+	stockClient StockChecker,
 	) *OrdersService{
 		return &OrdersService{stockClient: stockClient, repo: repo, broker: broker}
 }
@@ -135,8 +150,8 @@ func (o *OrdersService) CreateOrder(ctx context.Context, customerID string, emai
 	}
 
 	params := &stripe.CheckoutSessionParams{
-		SuccessURL: stripe.String("http://localhost:8080/orders/success"),
-		CancelURL: stripe.String("http://localhost:8080/orders/cancel"),
+		SuccessURL: stripe.String("http://localhost:3000/orders/success"),
+		CancelURL: stripe.String("http://localhost:3000/orders/cancel"),
 		LineItems: lnItems,
 		Mode: stripe.String(string(stripe.CheckoutSessionModePayment)),
 		Metadata: map[string]string{
