@@ -10,6 +10,7 @@ import(
     "github.com/google/uuid"
     "github.com/jackc/pgx/v5/pgtype"
     "os"
+    "google.golang.org/grpc"
 )
 
 
@@ -34,7 +35,7 @@ type SpyStockClient struct{
 	ErrToReturn error
 }
 
-func(s *SpyStockClient) CheckAvailability(ctx context.Context, req *pbStock.CheckAvailabilityRequest) (*pbStock.CheckAvailabilityResponse, error){
+func(s *SpyStockClient) CheckAvailability(ctx context.Context, req *pbStock.CheckAvailabilityRequest, opts ...grpc.CallOption) (*pbStock.CheckAvailabilityResponse, error){
 	s.Called = true
 	s.ctx = ctx
 	s.Req = req

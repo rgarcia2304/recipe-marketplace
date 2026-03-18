@@ -10,6 +10,7 @@ import(
 	"github.com/stripe/stripe-go/v79"
 	"github.com/stripe/stripe-go/v79/checkout/session"
 	"github.com/rgarcia2304/recipe-marketplace/orders/db"
+	"google.golang.org/grpc"
 )
 
 type OrderRepo interface{
@@ -29,7 +30,7 @@ type MessageBroker interface{
 
 
 type StockChecker interface{
-	CheckAvailability(ctx context.Context, req *pbStock.CheckAvailabilityRequest) (*pbStock.CheckAvailabilityResponse, error)
+	CheckAvailability(ctx context.Context, req *pbStock.CheckAvailabilityRequest, opts ...grpc.CallOption) (*pbStock.CheckAvailabilityResponse, error)
 }
 
 func NewOrdersService(
