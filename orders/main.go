@@ -71,7 +71,7 @@ func main(){
 
 	repo := repository.NewRepositoryService(queries, pool)
 	stockClient := pbStock.NewStockServiceClient(stockConn)
-	svc := service.NewOrdersService(stockClient, repo, b)
+	svc := service.NewOrdersService(repo, b, stock)
 	h := handler.NewOrdersHandler(svc)
 
 	s := grpc.NewServer()
