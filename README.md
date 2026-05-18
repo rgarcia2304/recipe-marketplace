@@ -7,6 +7,7 @@ I have always wondered end to end how it was that stores were built from browsin
 Design and engineering wise this is a event-driven recipe marketplace built with Go microservices. Users browse recipes, purchase them via Stripe, and receive the recipe files via email upon payment confirmation.
 
 **Live demo:** 
+[Watch the full purchase flow](https://www.loom.com/share/2d08f60f997548948a305d8098af005d)
 **Docker Hub:** [rgarcia2304](https://hub.docker.com/u/rgarcia2304)
 
 ---
